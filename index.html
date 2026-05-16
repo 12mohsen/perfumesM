@@ -1,0 +1,1921 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مستشار العطور الذكي</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #c9a96e;
+            --primary-dark: #a07840;
+            --primary-light: #e8d5b0;
+            --accent: #8b5e3c;
+            --bg: #0f0c1a;
+            --bg2: #1a1528;
+            --card: rgba(255,255,255,0.05);
+            --card-border: rgba(201,169,110,0.25);
+            --text: #f0ece4;
+            --text-muted: #9e9689;
+            --danger: #e05555;
+            --success: #4caf8a;
+            --info: #5b9bd5;
+            --shadow: 0 8px 32px rgba(0,0,0,0.4);
+            --radius: 18px;
+            --radius-sm: 10px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 24px 16px 40px;
+            background-image:
+                radial-gradient(ellipse at 20% 10%, rgba(201,169,110,0.08) 0%, transparent 55%),
+                radial-gradient(ellipse at 80% 80%, rgba(139,94,60,0.07) 0%, transparent 55%);
+        }
+
+        .container { max-width: 780px; margin: 0 auto; }
+
+        /* ===== HEADER ===== */
+        .app-header {
+            text-align: center;
+            padding: 30px 0 24px;
+        }
+        .app-header .logo {
+            font-size: 42px;
+            margin-bottom: 8px;
+            filter: drop-shadow(0 0 16px rgba(201,169,110,0.5));
+        }
+        .app-header h1 {
+            font-size: 26px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), #fff5e0, var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 0.5px;
+        }
+        .app-header p {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-top: 6px;
+        }
+
+        /* ===== THEME BUTTONS ===== */
+        .theme-strip {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 28px;
+        }
+        .theme-btn {
+            width: 30px; height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2.5px solid rgba(255,255,255,0.15);
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+        }
+        .theme-btn:hover { transform: scale(1.18); box-shadow: 0 4px 16px rgba(0,0,0,0.5); }
+
+        /* ===== CARD ===== */
+        .card {
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius);
+            padding: 28px;
+            margin-bottom: 22px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            transition: all 0.3s ease;
+        }
+        .card:hover { border-color: rgba(201,169,110,0.4); }
+
+        .section-title {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(to left, transparent, var(--card-border));
+        }
+
+        /* ===== INPUTS ===== */
+        input[type="text"],
+        input[type="password"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 13px 16px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: var(--radius-sm);
+            color: var(--text);
+            font-family: 'Tajawal', sans-serif;
+            font-size: 15px;
+            margin-bottom: 13px;
+            transition: border-color 0.2s, background 0.2s;
+            outline: none;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+        input:focus, select:focus {
+            border-color: var(--primary);
+            background: rgba(201,169,110,0.08);
+        }
+        input::placeholder { color: var(--text-muted); }
+        select option { background: #1a1528; color: var(--text); }
+
+        /* ===== BUTTONS ===== */
+        button {
+            width: 100%;
+            padding: 13px 20px;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-family: 'Tajawal', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            letter-spacing: 0.3px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: #1a1000;
+            box-shadow: 0 4px 18px rgba(201,169,110,0.3);
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(201,169,110,0.45); }
+
+        .btn-danger { background: rgba(224,85,85,0.15); color: var(--danger); border: 1px solid rgba(224,85,85,0.3); }
+        .btn-danger:hover { background: rgba(224,85,85,0.25); }
+
+        .btn-success { background: rgba(76,175,138,0.15); color: var(--success); border: 1px solid rgba(76,175,138,0.3); }
+        .btn-success:hover { background: rgba(76,175,138,0.25); }
+
+        .btn-info { background: rgba(91,155,213,0.15); color: var(--info); border: 1px solid rgba(91,155,213,0.3); }
+        .btn-info:hover { background: rgba(91,155,213,0.25); }
+
+        .btn-ghost { background: rgba(255,255,255,0.06); color: var(--text-muted); border: 1px solid rgba(255,255,255,0.1); width: auto; padding: 8px 16px; font-size: 13px; }
+        .btn-ghost:hover { background: rgba(255,255,255,0.1); color: var(--text); }
+
+        .btn-sm { width: auto; padding: 9px 16px; font-size: 13px; margin-bottom: 0; }
+
+        .btn-row { display: flex; gap: 10px; margin-top: 6px; }
+        .btn-row button { flex: 1; }
+
+        /* ===== CHECKBOX (البقاء متصلاً) ===== */
+        .remember-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+            cursor: pointer;
+            user-select: none;
+        }
+        .remember-row input[type="checkbox"] {
+            width: 20px; height: 20px;
+            appearance: none; -webkit-appearance: none;
+            border: 2px solid var(--primary);
+            border-radius: 6px;
+            background: transparent;
+            cursor: pointer;
+            margin-bottom: 0;
+            flex-shrink: 0;
+            transition: all 0.2s;
+            position: relative;
+        }
+        .remember-row input[type="checkbox"]:checked {
+            background: var(--primary);
+        }
+        .remember-row input[type="checkbox"]:checked::after {
+            content: '✓';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            color: #1a1000;
+            font-size: 13px;
+            font-weight: 900;
+        }
+        .remember-row span { color: var(--text-muted); font-size: 14px; }
+
+        /* ===== AUTH LINKS ===== */
+        .auth-link {
+            text-align: center;
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-top: 14px;
+        }
+        .auth-link a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .auth-link a:hover { text-decoration: underline; }
+
+        /* ===== DIVIDER ===== */
+        .divider {
+            border: none;
+            border-top: 1px dashed rgba(255,255,255,0.1);
+            margin: 22px 0;
+        }
+
+        /* ===== PROFILE SECTION ===== */
+        .profile-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .profile-avatar {
+            width: 48px; height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 800;
+            color: #1a1000;
+            box-shadow: 0 4px 14px rgba(201,169,110,0.35);
+            flex-shrink: 0;
+        }
+        .profile-info h2 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text);
+        }
+        .profile-info span { font-size: 13px; color: var(--text-muted); }
+        .profile-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+        /* تغيير كلمة المرور */
+        .change-pass-panel {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: var(--radius-sm);
+        }
+        .change-pass-panel h4 {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 14px;
+        }
+
+        /* ===== RESULT BOX ===== */
+        .result-box {
+            background: rgba(201,169,110,0.06);
+            border: 1px solid rgba(201,169,110,0.2);
+            border-radius: var(--radius-sm);
+            padding: 18px;
+            margin-top: 18px;
+            line-height: 2;
+            font-size: 14.5px;
+            color: var(--text);
+        }
+
+        /* ===== OIL ROWS ===== */
+        .oils-container { display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px; }
+        .oil-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: var(--radius-sm);
+            padding: 10px 12px;
+        }
+        .oil-row input, .oil-row select { margin-bottom: 0; }
+        .oil-row input[type="text"] { flex: 2; }
+        .oil-row input[type="number"] { flex: 1; }
+        .oil-row select { flex: 1.3; }
+
+        /* ===== FAVORITES ===== */
+        .fav-item {
+            background: rgba(255,255,255,0.03);
+            border-right: 3px solid var(--primary);
+            border-radius: var(--radius-sm);
+            padding: 16px;
+            margin-bottom: 14px;
+        }
+        .fav-item h4 {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        .fav-item .fav-content { font-size: 13.5px; line-height: 1.9; color: var(--text-muted); }
+
+        /* ===== FLEX HELPERS ===== */
+        .flex-between { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+        .flex-center { display: flex; align-items: center; gap: 10px; }
+
+        .hidden { display: none !important; }
+
+        /* ===== TOAST ===== */
+        .toast {
+            position: fixed;
+            bottom: 28px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: rgba(26,21,40,0.95);
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            padding: 12px 26px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            transition: all 0.35s ease;
+            z-index: 1000;
+            white-space: nowrap;
+        }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        /* ===== GRID ===== */
+        @media (max-width: 480px) {
+            .card { padding: 20px; }
+            .btn-row { flex-direction: column; }
+            .profile-header { flex-direction: column; align-items: flex-start; }
+        }
+
+        label.field-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        /* ===== OIL CATALOG ===== */
+        .catalog-toolbar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+        .catalog-toolbar input {
+            flex: 1;
+            min-width: 160px;
+            margin-bottom: 0;
+        }
+
+        .catalog-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        .catalog-table thead tr {
+            background: rgba(201,169,110,0.12);
+        }
+        .catalog-table th {
+            padding: 11px 12px;
+            text-align: right;
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 13px;
+            border-bottom: 1px solid rgba(201,169,110,0.2);
+        }
+        .catalog-table td {
+            padding: 11px 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            color: var(--text);
+            vertical-align: middle;
+        }
+        .catalog-table tr:hover td {
+            background: rgba(255,255,255,0.03);
+        }
+        .catalog-table .note-cell {
+            color: var(--text-muted);
+            font-size: 13px;
+            max-width: 180px;
+        }
+        .price-badge {
+            background: rgba(201,169,110,0.12);
+            color: var(--primary);
+            border: 1px solid rgba(201,169,110,0.25);
+            border-radius: 20px;
+            padding: 3px 10px;
+            font-size: 13px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+        .cat-actions { display: flex; gap: 6px; justify-content: flex-end; }
+        .cat-actions button { width: auto; padding: 5px 11px; font-size: 12px; }
+
+        .add-oil-form {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: var(--radius-sm);
+            padding: 18px;
+            margin-top: 18px;
+        }
+        .add-oil-form .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .add-oil-form .form-grid input,
+        .add-oil-form .form-grid select { margin-bottom: 0; }
+        .add-oil-form .full-width { grid-column: 1 / -1; }
+
+        .empty-catalog {
+            text-align: center;
+            padding: 32px 0;
+            color: var(--text-muted);
+            font-size: 15px;
+        }
+        .empty-catalog .empty-icon { font-size: 40px; margin-bottom: 10px; }
+
+        .catalog-count {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
+
+        @media (max-width: 540px) {
+            .catalog-table th:nth-child(3),
+            .catalog-table td:nth-child(3) { display: none; }
+            .add-oil-form .form-grid { grid-template-columns: 1fr; }
+        }
+
+        /* ===== SCROLL BOX (صندوق ارتفاع ثابت + شريط داخلي) ===== */
+        .scroll-box-wrap {
+            position: relative;
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            margin-bottom: 6px;
+        }
+        .scroll-box {
+            height: 320px;
+            overflow-y: auto;
+            padding: 4px 10px 4px 14px;
+            scrollbar-width: none;
+        }
+        .scroll-box::-webkit-scrollbar { display: none; }
+
+        /* شريط التمرير المخصص */
+        .custom-scrollbar {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 6px;
+            background: rgba(255,255,255,0.05);
+            cursor: pointer;
+        }
+        .custom-scrollbar-thumb {
+            position: absolute;
+            width: 6px;
+            background: linear-gradient(to bottom, var(--primary), var(--accent));
+            border-radius: 3px;
+            top: 0;
+            box-shadow: 0 0 6px rgba(201,169,110,0.45);
+            min-height: 30px;
+            cursor: grab;
+            transition: background 0.2s;
+        }
+        .custom-scrollbar-thumb:hover { background: var(--primary); }
+
+        /* أزرار التمرير ↑ ↓ */
+        .scroll-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .scroll-btn-group { display: flex; gap: 6px; }
+        .scroll-btn {
+            width: 30px; height: 30px;
+            border-radius: 8px;
+            background: rgba(201,169,110,0.1);
+            border: 1px solid rgba(201,169,110,0.25);
+            color: var(--primary);
+            font-size: 13px;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s;
+        }
+        .scroll-btn:hover { background: rgba(201,169,110,0.25); transform: translateY(-1px); }
+        .scroll-pos-label { font-size: 12px; color: var(--text-muted); }
+
+        /* ===== ترقيم السجل ===== */
+        .fav-number {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 24px; height: 24px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: #1a1000;
+            border-radius: 50%;
+            font-size: 11px; font-weight: 800;
+            margin-left: 8px; flex-shrink: 0;
+        }
+        .fav-header-row { display: flex; align-items: center; margin-bottom: 8px; gap: 6px; }
+        .fav-header-title { font-size: 14px; font-weight: 700; color: var(--primary); flex: 1; }
+
+        /* زر النجمة */
+        .star-btn {
+            background: none;
+            border: none;
+            width: 30px; height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex; align-items: center; justify-content: center;
+            transition: transform 0.2s, filter 0.2s;
+            flex-shrink: 0;
+            padding: 0;
+            filter: grayscale(1) opacity(0.4);
+        }
+        .star-btn.starred {
+            filter: none;
+            animation: star-pop 0.35s ease;
+        }
+        .star-btn:hover { transform: scale(1.25); filter: none; }
+        @keyframes star-pop {
+            0%   { transform: scale(1); }
+            50%  { transform: scale(1.5) rotate(15deg); }
+            100% { transform: scale(1); }
+        }
+
+        /* بطاقة المفضلة المميزة */
+        .fav-item.starred-item {
+            border-right-color: #f5c842;
+            background: rgba(245,200,66,0.05);
+            box-shadow: 0 0 0 1px rgba(245,200,66,0.15);
+        }
+        .fav-item.starred-item .fav-header-title { color: #f5c842; }
+
+        /* شريط المميزة في الإجمالي */
+        .fav-stat.starred-stat .fav-stat-num { color: #f5c842; }
+
+        /* ===== CONFIRM MODAL ===== */
+        .modal-overlay {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.65);
+            backdrop-filter: blur(6px);
+            z-index: 2000;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.25s ease;
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: all; }
+        .modal-box {
+            background: #1a1528;
+            border: 1px solid rgba(201,169,110,0.3);
+            border-radius: 18px;
+            padding: 28px 24px 20px;
+            max-width: 340px; width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+            transform: scale(0.9);
+            transition: transform 0.25s ease;
+        }
+        .modal-overlay.active .modal-box { transform: scale(1); }
+        .modal-icon { font-size: 40px; margin-bottom: 10px; }
+        .modal-title { font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+        .modal-msg { font-size: 14px; color: var(--text-muted); margin-bottom: 22px; line-height: 1.6; }
+        .modal-btns { display: flex; gap: 10px; }
+        .modal-btns button { flex: 1; padding: 12px; border-radius: 10px; font-family: 'Tajawal',sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; border: none; transition: all 0.2s; }
+        .modal-confirm { background: linear-gradient(135deg,#e05555,#b83030); color: #fff; }
+        .modal-confirm:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(224,85,85,0.4); }
+        .modal-cancel { background: rgba(255,255,255,0.07); color: var(--text-muted); border: 1px solid rgba(255,255,255,0.1) !important; }
+        .modal-cancel:hover { background: rgba(255,255,255,0.12); color: var(--text); }
+
+        /* ===== CHECKBOXES & BULK TOOLBAR ===== */
+        .bulk-toolbar {
+            display: flex; align-items: center; gap: 8px;
+            flex-wrap: wrap; margin-bottom: 10px;
+            padding: 8px 12px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: var(--radius-sm);
+        }
+        .bulk-toolbar label { display: flex; align-items: center; gap: 7px; cursor: pointer; font-size: 13px; color: var(--text-muted); user-select: none; }
+        .bulk-check {
+            width: 18px; height: 18px;
+            appearance: none; -webkit-appearance: none;
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 5px; background: transparent;
+            cursor: pointer; flex-shrink: 0;
+            transition: all 0.2s; position: relative;
+        }
+        .bulk-check:checked { background: var(--danger); border-color: var(--danger); }
+        .bulk-check:checked::after {
+            content: '✓'; position: absolute;
+            top: 50%; left: 50%; transform: translate(-50%,-50%);
+            color: #fff; font-size: 11px; font-weight: 900;
+        }
+        .bulk-count { font-size: 12px; color: var(--primary); font-weight: 700; margin-right: auto; }
+        .btn-bulk-del {
+            background: rgba(224,85,85,0.15); color: var(--danger);
+            border: 1px solid rgba(224,85,85,0.3);
+            border-radius: 8px; padding: 6px 14px;
+            font-family: 'Tajawal',sans-serif; font-size: 13px; font-weight: 700;
+            cursor: pointer; transition: all 0.2s; white-space: nowrap;
+        }
+        .btn-bulk-del:hover { background: rgba(224,85,85,0.28); }
+        .btn-bulk-del:disabled { opacity: 0.35; cursor: not-allowed; }
+
+        /* checkbox على كل عنصر */
+        .item-check-wrap { display: flex; align-items: flex-start; gap: 10px; }
+        .item-check {
+            width: 18px; height: 18px; margin-top: 3px;
+            appearance: none; -webkit-appearance: none;
+            border: 2px solid rgba(255,255,255,0.15);
+            border-radius: 5px; background: transparent;
+            cursor: pointer; flex-shrink: 0; transition: all 0.2s; position: relative;
+        }
+        .item-check:checked { background: var(--danger); border-color: var(--danger); }
+        .item-check:checked::after {
+            content: '✓'; position: absolute;
+            top: 50%; left: 50%; transform: translate(-50%,-50%);
+            color: #fff; font-size: 11px; font-weight: 900;
+        }
+        .fav-item.selected, .purchases-table tr.selected td { background: rgba(224,85,85,0.07) !important; }
+
+        /* ===== إجمالي السجل ===== */
+        .fav-summary {
+            display: flex;
+            gap: 0;
+            background: rgba(201,169,110,0.07);
+            border: 1px solid rgba(201,169,110,0.2);
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            margin-bottom: 14px;
+        }
+        .fav-stat {
+            flex: 1; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            padding: 12px 8px;
+            border-left: 1px solid rgba(255,255,255,0.06);
+        }
+        .fav-stat:last-child { border-left: none; }
+        .fav-stat-num { font-size: 22px; font-weight: 800; color: var(--primary); line-height: 1.1; }
+        .fav-stat-label { font-size: 11px; color: var(--text-muted); margin-top: 3px; text-align: center; }
+
+        /* ===== قسم المشتريات ===== */
+        .purchases-toggle-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            user-select: none;
+            padding: 4px 0 16px;
+        }
+        .purchases-toggle-bar:hover .toggle-arrow { color: var(--primary); }
+        .toggle-arrow {
+            font-size: 13px;
+            color: var(--text-muted);
+            transition: transform 0.3s ease, color 0.2s;
+        }
+        .toggle-arrow.open { transform: rotate(180deg); }
+
+        .purchases-body {
+            overflow: hidden;
+            max-height: 0;
+            transition: max-height 0.4s ease, opacity 0.3s ease;
+            opacity: 0;
+        }
+        .purchases-body.open {
+            max-height: 1200px;
+            opacity: 1;
+        }
+
+        /* نموذج إضافة مشتريات */
+        .purchase-form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .purchase-form-grid input,
+        .purchase-form-grid select { margin-bottom: 0; }
+        .purchase-form-grid .full-col { grid-column: 1 / -1; }
+
+        /* جدول المشتريات */
+        .purchases-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13.5px;
+            margin-top: 16px;
+        }
+        .purchases-table thead tr {
+            background: rgba(201,169,110,0.1);
+        }
+        .purchases-table th {
+            padding: 10px 12px;
+            text-align: right;
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 12px;
+            border-bottom: 1px solid rgba(201,169,110,0.18);
+        }
+        .purchases-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            color: var(--text);
+            vertical-align: middle;
+        }
+        .purchases-table tr:hover td { background: rgba(255,255,255,0.02); }
+        .purchases-table .td-note { color: var(--text-muted); font-size: 12.5px; max-width: 160px; }
+        .purchases-table .td-price {
+            font-weight: 700;
+            color: var(--success);
+            white-space: nowrap;
+        }
+        .purchases-table .td-place { color: var(--info); font-size: 12.5px; }
+
+        /* ملخص المشتريات */
+        .purchases-summary {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            background: rgba(76,175,138,0.07);
+            border: 1px solid rgba(76,175,138,0.2);
+            border-radius: var(--radius-sm);
+            padding: 12px 16px;
+            margin-top: 14px;
+        }
+        .psum-item { display: flex; align-items: center; gap: 6px; font-size: 13px; }
+        .psum-label { color: var(--text-muted); }
+        .psum-val { font-weight: 700; color: var(--success); }
+
+        /* صندوق تمرير المشتريات */
+        .purchases-scroll-wrap {
+            position: relative;
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            margin-top: 6px;
+        }
+        .purchases-scroll-box {
+            max-height: 280px;
+            overflow-y: auto;
+            scrollbar-width: none;
+            padding-left: 10px;
+        }
+        .purchases-scroll-box::-webkit-scrollbar { display: none; }
+
+        @media (max-width: 500px) {
+            .purchase-form-grid { grid-template-columns: 1fr; }
+            .purchases-table th:nth-child(3),
+            .purchases-table td:nth-child(3) { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+
+<!-- نافذة تأكيد الحذف -->
+<div class="modal-overlay" id="confirm-modal" onclick="closeModal(event)">
+    <div class="modal-box">
+        <div class="modal-icon">🗑️</div>
+        <div class="modal-title" id="modal-title">تأكيد الحذف</div>
+        <div class="modal-msg" id="modal-msg">هل أنت متأكد من الحذف؟ لا يمكن التراجع عن هذا الإجراء.</div>
+        <div class="modal-btns">
+            <button class="modal-confirm" id="modal-confirm-btn">نعم، احذف</button>
+            <button class="modal-cancel" onclick="closeModal()">إلغاء</button>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+
+    <!-- HEADER -->
+    <div class="app-header">
+        <div class="logo">🪔</div>
+        <h1>مستشار العطور الذكي</h1>
+        <p>صياغة عطرك الخاص بدقة احترافية</p>
+    </div>
+
+    <!-- THEME STRIP -->
+    <div class="theme-strip">
+        <div class="theme-btn" style="background:linear-gradient(135deg,#c9a96e,#8b5e3c);" title="ذهبي" onclick="setTheme('gold')"></div>
+        <div class="theme-btn" style="background:linear-gradient(135deg,#b56dff,#6a2fcc);" title="بنفسجي" onclick="setTheme('violet')"></div>
+        <div class="theme-btn" style="background:linear-gradient(135deg,#e91e63,#880e4f);" title="وردي" onclick="setTheme('rose')"></div>
+        <div class="theme-btn" style="background:linear-gradient(135deg,#2dd4bf,#0f7c6e);" title="فيروزي" onclick="setTheme('teal')"></div>
+    </div>
+
+    <!-- AUTH CARD -->
+    <div id="auth-section" class="card">
+
+        <!-- REGISTER -->
+        <div id="register-box">
+            <div class="section-title">✨ إنشاء حساب جديد</div>
+            <label class="field-label">الاسم</label>
+            <input type="text" id="reg-name" placeholder="اسمك بالعربي أو الإنجليزي">
+            <label class="field-label">كلمة المرور</label>
+            <input type="password" id="reg-pass" placeholder="••••••••">
+            <label class="field-label">تلميح كلمة المرور</label>
+            <input type="text" id="reg-hint" placeholder="مثال: اسم أول حيوان أليف">
+            <button class="btn-primary" onclick="register()">إنشاء الحساب 🚀</button>
+            <p class="auth-link">لديك حساب بالفعل؟ <a href="#" onclick="toggleAuth(false)">تسجيل الدخول</a></p>
+        </div>
+
+        <!-- LOGIN -->
+        <div id="login-box" class="hidden">
+            <div class="section-title">🔑 تسجيل الدخول</div>
+            <label class="field-label">الاسم</label>
+            <input type="text" id="login-name" placeholder="اسمك">
+            <label class="field-label">كلمة المرور</label>
+            <input type="password" id="login-pass" placeholder="••••••••">
+
+            <!-- ✅ البقاء متصلاً -->
+            <label class="remember-row">
+                <input type="checkbox" id="remember-me">
+                <span>البقاء متصلاً</span>
+            </label>
+
+            <button class="btn-primary" onclick="login()">دخول ✨</button>
+            <p class="auth-link"><a href="#" onclick="showHint()">نسيت كلمة المرور؟</a></p>
+            <p class="auth-link">ليس لديك حساب؟ <a href="#" onclick="toggleAuth(true)">إنشاء حساب</a></p>
+        </div>
+    </div>
+
+    <!-- PROFILE CARD -->
+    <div id="profile-section" class="card hidden">
+        <div class="profile-header">
+            <div class="flex-center">
+                <div class="profile-avatar" id="avatar-letter">أ</div>
+                <div class="profile-info">
+                    <h2>مرحباً، <span id="user-display-name"></span> 👋</h2>
+                    <span>مستشار عطور محترف</span>
+                </div>
+            </div>
+            <div class="profile-actions">
+                <button class="btn-ghost btn-sm" onclick="shareApp()">🔗 مشاركة</button>
+                <button class="btn-sm btn-danger" onclick="logout()">خروج</button>
+            </div>
+        </div>
+
+        <!-- تغيير كلمة المرور -->
+        <div class="change-pass-panel">
+            <div class="flex-between" style="margin-bottom:12px;">
+                <h4>🔒 تغيير كلمة المرور</h4>
+                <button class="btn-ghost btn-sm" onclick="toggleChangePass()">إظهار / إخفاء</button>
+            </div>
+            <div id="change-pass-form" class="hidden">
+                <label class="field-label">كلمة المرور الحالية</label>
+                <input type="password" id="old-pass" placeholder="••••••••">
+                <label class="field-label">كلمة المرور الجديدة</label>
+                <input type="password" id="new-pass" placeholder="••••••••">
+                <label class="field-label">تأكيد كلمة المرور الجديدة</label>
+                <input type="password" id="confirm-pass" placeholder="••••••••">
+                <button class="btn-primary" style="margin-top:4px;" onclick="changePassword()">حفظ كلمة المرور الجديدة 🔐</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PURCHASES SECTION -->
+    <div id="purchases-section" class="card hidden">
+
+        <!-- رأس القسم مع زر الإظهار/الإخفاء -->
+        <div class="purchases-toggle-bar" onclick="togglePurchases()">
+            <div class="section-title" style="margin-bottom:0;">🛒 مشتريات الزيوت</div>
+            <span class="toggle-arrow" id="purchases-arrow">▼</span>
+        </div>
+
+        <!-- جسم القسم القابل للطي -->
+        <div class="purchases-body" id="purchases-body">
+
+            <!-- نموذج الإضافة -->
+            <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:var(--radius-sm);padding:16px;margin-bottom:4px;">
+                <div style="font-size:13px;font-weight:700;color:var(--primary);margin-bottom:12px;">➕ إضافة مشتريات جديدة</div>
+                <div class="purchase-form-grid">
+                    <div>
+                        <label class="field-label">اسم الزيت</label>
+                        <input type="text" id="pur-name" placeholder="مثال: عود هندي">
+                    </div>
+                    <div>
+                        <label class="field-label">السعر (ريال)</label>
+                        <input type="number" id="pur-price" placeholder="مثال: 250" min="0">
+                    </div>
+                    <div>
+                        <label class="field-label">الكمية المشتراة</label>
+                        <input type="text" id="pur-qty" placeholder="مثال: 10 جم">
+                    </div>
+                    <div>
+                        <label class="field-label">مكان الشراء</label>
+                        <input type="text" id="pur-place" placeholder="مثال: سوق العطارين">
+                    </div>
+                    <div class="full-col">
+                        <label class="field-label">ملاحظة</label>
+                        <input type="text" id="pur-note" placeholder="مثال: جودة ممتازة، سيتم إعادة الطلب">
+                    </div>
+                </div>
+                <button class="btn-primary" onclick="addPurchase()">إضافة للسجل 🛒</button>
+            </div>
+
+            <!-- جدول المشتريات بصندوق تمرير -->
+            <div id="purchases-table-wrap">
+                <!-- شريط التحديد الجماعي -->
+                <div class="bulk-toolbar" id="pur-bulk-bar" style="margin-top:14px; display:none;">
+                    <label><input type="checkbox" class="bulk-check" id="pur-select-all" onchange="toggleSelectAll('pur')"> تحديد الكل</label>
+                    <span class="bulk-count" id="pur-sel-count">0 محدد</span>
+                    <button class="btn-bulk-del" id="pur-bulk-del-btn" onclick="bulkDelete('pur')" disabled>حذف المحدد 🗑️</button>
+                </div>
+                <div class="scroll-controls" style="margin-top:10px;">
+                    <div class="scroll-btn-group">
+                        <button class="scroll-btn" onclick="scrollBox('pur-box',-100)">▲</button>
+                        <button class="scroll-btn" onclick="scrollBox('pur-box', 100)">▼</button>
+                    </div>
+                    <span class="scroll-pos-label" id="pur-pos">—</span>
+                </div>
+                <div class="purchases-scroll-wrap">
+                    <div class="custom-scrollbar" id="pur-track" onclick="trackClick(event,'pur-box','pur-thumb')">
+                        <div class="custom-scrollbar-thumb" id="pur-thumb"></div>
+                    </div>
+                    <div class="purchases-scroll-box" id="pur-box" onscroll="syncThumb('pur-box','pur-thumb','pur-pos')">
+                        <table class="purchases-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>🧴 الزيت</th>
+                                    <th>📦 الكمية</th>
+                                    <th>💰 السعر</th>
+                                    <th>📍 المكان</th>
+                                    <th>📝 ملاحظة</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="purchases-body-table"></tbody>
+                        </table>
+                        <div id="purchases-empty" style="text-align:center;padding:24px 0;color:var(--text-muted);display:none;">
+                            🛒 لا توجد مشتريات بعد. أضف أول عملية شراء!
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ملخص الإجمالي -->
+                <div class="purchases-summary" id="purchases-summary" style="display:none;"></div>
+            </div>
+
+        </div><!-- /purchases-body -->
+    </div>
+
+    <!-- APP SECTION -->
+    <div id="app-section" class="card hidden">
+        <div class="section-title">🏷️ تسمية العطر</div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <input type="text" id="perfume-ar" placeholder="الاسم بالعربي – مثال: الجسور" style="flex:1; min-width:140px;">
+            <input type="text" id="perfume-en" placeholder="English Name – Premium Blend" style="flex:1; min-width:140px;">
+        </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <select id="name-words" style="flex:1;">
+                <option value="1">كلمة واحدة</option>
+                <option value="2">كلمتين</option>
+                <option value="3">ثلاث كلمات</option>
+            </select>
+            <select id="name-gender" style="flex:1;">
+                <option value="male">رجالي</option>
+                <option value="female">نسائي</option>
+                <option value="neutral">محايد</option>
+            </select>
+        </div>
+        <button class="btn-ghost" style="width:auto;" onclick="generatePerfumeName()">✨ توليد اسم مقترح</button>
+
+        <hr class="divider">
+
+        <div class="section-title">🧪 تركيب الزيوت بالقطرات أو النسب</div>
+        <label class="field-label">حجم العبوة الإجمالي (مل)</label>
+        <input type="number" id="total-ml" value="50" oninput="calculate()">
+
+        <div class="flex-between" style="margin-bottom: 10px;">
+            <label class="field-label" style="margin-bottom:0;">الزيوت العطرية في التركيبة</label>
+            <div style="display:flex; gap:6px; align-items:center;">
+                <button class="scroll-btn" onclick="scrollBox('oils-box',-80)" title="للأعلى">▲</button>
+                <button class="scroll-btn" onclick="scrollBox('oils-box', 80)" title="للأسفل">▼</button>
+                <button class="btn-ghost btn-sm" onclick="addOilRow()">+ إضافة زيت</button>
+            </div>
+        </div>
+
+        <!-- صندوق الزيوت بارتفاع ثابت وشريط جانبي -->
+        <div class="scroll-box-wrap" style="margin-bottom:10px;">
+            <div class="custom-scrollbar" id="oils-track" onclick="trackClick(event,'oils-box','oils-thumb')">
+                <div class="custom-scrollbar-thumb" id="oils-thumb"></div>
+            </div>
+            <div class="scroll-box" id="oils-box" style="height:220px; padding:8px 10px 8px 14px;"
+                 onscroll="syncThumb('oils-box','oils-thumb',null)">
+                <div class="oils-container" id="oils-container">
+                    <div class="oil-row">
+                        <input type="text" class="oil-name" placeholder="عنبر" value="عنبر">
+                        <input type="number" class="oil-val" value="10" oninput="calculate()">
+                        <select class="oil-unit" onchange="calculate()">
+                            <option value="drops">💧 قطرة</option>
+                            <option value="percent" selected>% نسبة</option>
+                        </select>
+                        <button class="btn-sm btn-danger" onclick="removeOilRow(this)" style="padding:8px 12px;">✕</button>
+                    </div>
+                    <div class="oil-row">
+                        <input type="text" class="oil-name" placeholder="مسك" value="مسك">
+                        <input type="number" class="oil-val" value="5" oninput="calculate()">
+                        <select class="oil-unit" onchange="calculate()">
+                            <option value="drops">💧 قطرة</option>
+                            <option value="percent" selected>% نسبة</option>
+                        </select>
+                        <button class="btn-sm btn-danger" onclick="removeOilRow(this)" style="padding:8px 12px;">✕</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <label class="field-label" style="margin-top:8px;">قطرات الماء المقطر</label>
+        <input type="number" id="water-drops" value="0" oninput="calculate()">
+
+        <div class="result-box" id="current-report"></div>
+
+        <div class="btn-row" style="margin-top:18px;">
+            <button class="btn-success" onclick="savePerfume()">حفظ في السجل ⭐</button>
+            <button class="btn-info" onclick="shareComp()">مشاركة التركيبة 🔗</button>
+        </div>
+    </div>
+
+    <!-- FAVORITES -->
+    <div id="favorites-section" class="card hidden">
+        <div class="section-title">⭐ سجل العطور المحفوظة</div>
+
+        <!-- إجمالي السجل -->
+        <div class="fav-summary" id="fav-summary" style="display:none;"></div>
+
+        <!-- شريط التحديد الجماعي -->
+        <div class="bulk-toolbar" id="fav-bulk-bar" style="display:none;">
+            <label><input type="checkbox" class="bulk-check" id="fav-select-all" onchange="toggleSelectAll('fav')"> تحديد الكل</label>
+            <span class="bulk-count" id="fav-sel-count">0 محدد</span>
+            <button class="btn-bulk-del" id="fav-bulk-del-btn" onclick="bulkDelete('fav')" disabled>حذف المحدد 🗑️</button>
+        </div>
+
+        <!-- أزرار التمرير -->
+        <div class="scroll-controls">
+            <div class="scroll-btn-group">
+                <button class="scroll-btn" onclick="scrollBox('fav-box',-120)" title="للأعلى">▲</button>
+                <button class="scroll-btn" onclick="scrollBox('fav-box', 120)" title="للأسفل">▼</button>
+            </div>
+            <span class="scroll-pos-label" id="fav-pos">—</span>
+        </div>
+
+        <!-- صندوق التمرير الداخلي -->
+        <div class="scroll-box-wrap">
+            <div class="custom-scrollbar" id="fav-track" onclick="trackClick(event,'fav-box','fav-thumb')">
+                <div class="custom-scrollbar-thumb" id="fav-thumb"></div>
+            </div>
+            <div class="scroll-box" id="fav-box" onscroll="syncThumb('fav-box','fav-thumb','fav-pos')">
+                <div id="favorites-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- OIL CATALOG -->
+    <div id="catalog-section" class="card hidden">
+
+        <!-- رأس القسم مع زر الإظهار/الإخفاء -->
+        <div class="purchases-toggle-bar" onclick="toggleCatalog()">
+            <div class="section-title" style="margin-bottom:0;">🧴 قائمة الزيوت العطرية</div>
+            <span class="toggle-arrow" id="catalog-arrow">▼</span>
+        </div>
+
+        <!-- جسم القسم القابل للطي -->
+        <div class="purchases-body" id="catalog-body-wrap">
+
+            <div class="catalog-toolbar">
+                <input type="text" id="catalog-search" placeholder="🔍 ابحث باسم الزيت..." oninput="renderCatalog()">
+                <button class="btn-ghost btn-sm" onclick="toggleAddOilForm()">+ إضافة زيت جديد</button>
+            </div>
+
+            <div class="catalog-count" id="catalog-count"></div>
+
+            <!-- شريط التحديد الجماعي -->
+            <div class="bulk-toolbar" id="cat-bulk-bar" style="display:none;">
+                <label><input type="checkbox" class="bulk-check" id="cat-select-all" onchange="toggleSelectAll('cat')"> تحديد الكل</label>
+                <span class="bulk-count" id="cat-sel-count">0 محدد</span>
+                <button class="btn-bulk-del" id="cat-bulk-del-btn" onclick="bulkDelete('cat')" disabled>حذف المحدد 🗑️</button>
+            </div>
+
+            <!-- أزرار التمرير -->
+            <div class="scroll-controls">
+                <div class="scroll-btn-group">
+                    <button class="scroll-btn" onclick="scrollBox('catalog-box',-120)" title="للأعلى">▲</button>
+                    <button class="scroll-btn" onclick="scrollBox('catalog-box', 120)" title="للأسفل">▼</button>
+                </div>
+                <span class="scroll-pos-label" id="catalog-pos">—</span>
+            </div>
+
+            <!-- صندوق التمرير الداخلي -->
+            <div class="scroll-box-wrap">
+                <div class="custom-scrollbar" id="catalog-track" onclick="trackClick(event,'catalog-box','catalog-thumb')">
+                    <div class="custom-scrollbar-thumb" id="catalog-thumb"></div>
+                </div>
+                <div class="scroll-box" id="catalog-box" onscroll="syncThumb('catalog-box','catalog-thumb','catalog-pos')">
+                    <table class="catalog-table" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>🧴 اسم الزيت</th>
+                                <th>💰 السعر</th>
+                                <th>📝 الملاحظة</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="catalog-body"></tbody>
+                    </table>
+                    <div id="catalog-empty" class="empty-catalog hidden">
+                        <div class="empty-icon">🫙</div>
+                        <p>لا توجد زيوت مطابقة</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- نموذج الإضافة / التعديل -->
+            <div class="add-oil-form hidden" id="add-oil-form">
+                <h4 style="color:var(--primary); margin-bottom:14px; font-size:15px;" id="oil-form-title">➕ إضافة زيت جديد</h4>
+                <input type="hidden" id="edit-oil-id">
+                <div class="form-grid">
+                    <div>
+                        <label class="field-label">اسم الزيت</label>
+                        <input type="text" id="oil-name-input" placeholder="مثال: عود هندي">
+                    </div>
+                    <div>
+                        <label class="field-label">السعر (ريال / جم أو مل)</label>
+                        <input type="number" id="oil-price-input" placeholder="مثال: 120" min="0">
+                    </div>
+                    <div>
+                        <label class="field-label">وحدة السعر</label>
+                        <select id="oil-unit-price">
+                            <option value="جم">لكل جرام</option>
+                            <option value="مل">لكل مليلتر</option>
+                            <option value="مثقال">لكل مثقال</option>
+                            <option value="قطرة">لكل قطرة</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="field-label">التصنيف</label>
+                        <select id="oil-category">
+                            <option value="عود">عود</option>
+                            <option value="مسك">مسك</option>
+                            <option value="عنبر">عنبر</option>
+                            <option value="زهور">زهور</option>
+                            <option value="خشبي">خشبي</option>
+                            <option value="حمضي">حمضي</option>
+                            <option value="توابل">توابل</option>
+                            <option value="أخرى">أخرى</option>
+                        </select>
+                    </div>
+                    <div class="full-width">
+                        <label class="field-label">الملاحظة</label>
+                        <input type="text" id="oil-note-input" placeholder="مثال: رائحة دخانية قوية، تستخدم كنوتة قاعدية">
+                    </div>
+                </div>
+                <div class="btn-row" style="margin-top:14px;">
+                    <button class="btn-primary" onclick="saveOilEntry()">حفظ الزيت 💾</button>
+                    <button class="btn-ghost" style="flex:0.5;" onclick="cancelOilForm()">إلغاء</button>
+                </div>
+            </div>
+
+        </div><!-- /catalog-body-wrap -->
+    </div>
+
+</div>
+
+<script>
+    const nameBank = {
+        male: ["الجسور", "الهيبة", "العميد", "فارس الليل", "سحر الغموض", "الملوكي", "ذهب الصحراء"],
+        female: ["رقة", "أوركيد", "ياسمينة", "أنفاس الورد", "أميرة الليل", "بتلة الفجر", "سلاف الربيع"],
+        neutral: ["نقاء", "توازن", "أثير", "المسك الصافي", "عنبر الأرض", "روح الشرق", "درب النجوم"]
+    };
+
+    const themes = {
+        gold:   { primary:'#c9a96e', primaryDark:'#a07840', primaryLight:'#e8d5b0', accent:'#8b5e3c', bg:'#0f0c1a', bg2:'#1a1528' },
+        violet: { primary:'#b56dff', primaryDark:'#6a2fcc', primaryLight:'#d4a8ff', accent:'#8a3fd6', bg:'#0d0a1a', bg2:'#150f2b' },
+        rose:   { primary:'#e91e8c', primaryDark:'#880e4f', primaryLight:'#f9a8d4', accent:'#c71a6e', bg:'#120a10', bg2:'#1e0f18' },
+        teal:   { primary:'#2dd4bf', primaryDark:'#0f7c6e', primaryLight:'#99f6e4', accent:'#14b8a6', bg:'#071613', bg2:'#0e1f1d' },
+    };
+
+    let favorites  = JSON.parse(localStorage.getItem('perfume_pro_v6')) || [];
+    let purchases  = JSON.parse(localStorage.getItem('perfume_purchases')) || [];
+    let oilCatalog = JSON.parse(localStorage.getItem('perfume_oil_catalog')) || [
+        { id: 1, name: 'عود هندي', price: 150, unit: 'جم', category: 'عود', note: 'رائحة دخانية عميقة، نوتة قاعدية قوية' },
+        { id: 2, name: 'مسك أبيض', price: 80, unit: 'جم', category: 'مسك', note: 'ناعم وخفيف، مناسب للنساء والأطفال' },
+        { id: 3, name: 'عنبر رمادي', price: 200, unit: 'جم', category: 'عنبر', note: 'دافئ وكريمي، يثبّت العطر لساعات طويلة' },
+        { id: 4, name: 'ورد طائفي', price: 300, unit: 'مل', category: 'زهور', note: 'نقي ومركّز، من أجود أنواع زيت الورد' },
+        { id: 5, name: 'أرز صندل', price: 120, unit: 'مل', category: 'خشبي', note: 'خشبي كريمي، يمنح العطر عمقاً وثباتاً' },
+    ];
+
+    window.onload = function() {
+        const persistent = localStorage.getItem('perfume_user_persistent');
+        const session = sessionStorage.getItem('perfume_user_session');
+        const raw = persistent || session;
+        if (raw) showApp(JSON.parse(raw).name);
+        else {
+            toggleAuth(false); // show login by default
+        }
+        calculate();
+    };
+
+    // ========== AUTH ==========
+    function toggleAuth(showReg) {
+        document.getElementById('register-box').classList.toggle('hidden', !showReg);
+        document.getElementById('login-box').classList.toggle('hidden', showReg);
+    }
+
+    function register() {
+        const name = document.getElementById('reg-name').value.trim();
+        const pass = document.getElementById('reg-pass').value.trim();
+        const hint = document.getElementById('reg-hint').value.trim();
+        if (!name || !pass) return showToast('الرجاء إدخال الاسم وكلمة المرور');
+        localStorage.setItem('perfume_user', JSON.stringify({ name, pass, hint }));
+        localStorage.setItem('perfume_user_persistent', JSON.stringify({ name }));
+        showApp(name);
+        showToast('تم إنشاء الحساب بنجاح 🎉');
+    }
+
+    function login() {
+        const name = document.getElementById('login-name').value.trim();
+        const pass = document.getElementById('login-pass').value.trim();
+        const remember = document.getElementById('remember-me').checked;
+        const user = JSON.parse(localStorage.getItem('perfume_user'));
+        if (user && user.name === name && user.pass === pass) {
+            if (remember) {
+                localStorage.setItem('perfume_user_persistent', JSON.stringify({ name }));
+                sessionStorage.removeItem('perfume_user_session');
+            } else {
+                sessionStorage.setItem('perfume_user_session', JSON.stringify({ name }));
+                localStorage.removeItem('perfume_user_persistent');
+            }
+            showApp(name);
+            showToast('أهلاً بعودتك ' + name + ' 👋');
+        } else {
+            showToast('خطأ في الاسم أو كلمة المرور ❌');
+        }
+    }
+
+    function logout() {
+        localStorage.removeItem('perfume_user_persistent');
+        sessionStorage.removeItem('perfume_user_session');
+        location.reload();
+    }
+
+    function showHint() {
+        const user = JSON.parse(localStorage.getItem('perfume_user'));
+        showToast(user ? 'التلميح: ' + (user.hint || 'لا يوجد تلميح') : 'لا يوجد حساب');
+    }
+
+    // ========== CHANGE PASSWORD ==========
+    function toggleChangePass() {
+        document.getElementById('change-pass-form').classList.toggle('hidden');
+    }
+
+    function changePassword() {
+        const oldPass = document.getElementById('old-pass').value.trim();
+        const newPass = document.getElementById('new-pass').value.trim();
+        const confirmPass = document.getElementById('confirm-pass').value.trim();
+        const user = JSON.parse(localStorage.getItem('perfume_user'));
+
+        if (!user) return showToast('لا يوجد حساب مسجل');
+        if (user.pass !== oldPass) return showToast('كلمة المرور الحالية غير صحيحة ❌');
+        if (!newPass) return showToast('أدخل كلمة المرور الجديدة');
+        if (newPass !== confirmPass) return showToast('كلمتا المرور غير متطابقتين ❌');
+
+        user.pass = newPass;
+        localStorage.setItem('perfume_user', JSON.stringify(user));
+        document.getElementById('old-pass').value = '';
+        document.getElementById('new-pass').value = '';
+        document.getElementById('confirm-pass').value = '';
+        document.getElementById('change-pass-form').classList.add('hidden');
+        showToast('تم تغيير كلمة المرور بنجاح 🔐');
+    }
+
+    // ========== SHOW APP ==========
+    function showApp(name) {
+        document.getElementById('auth-section').classList.add('hidden');
+        document.getElementById('profile-section').classList.remove('hidden');
+        document.getElementById('purchases-section').classList.remove('hidden');
+        document.getElementById('app-section').classList.remove('hidden');
+        document.getElementById('catalog-section').classList.remove('hidden');
+        document.getElementById('favorites-section').classList.remove('hidden');
+        document.getElementById('user-display-name').innerText = name;
+        const letter = name ? name.charAt(0).toUpperCase() : '?';
+        document.getElementById('avatar-letter').innerText = letter;
+        calculate();
+        renderFavs();
+        renderCatalog();
+        renderPurchases();
+        setTimeout(() => syncThumb('oils-box','oils-thumb',null), 100);
+    }
+
+    // ========== OILS ==========
+    function addOilRow() {
+        const div = document.createElement('div');
+        div.className = 'oil-row';
+        div.innerHTML = `
+            <input type="text" class="oil-name" placeholder="اسم الزيت">
+            <input type="number" class="oil-val" value="0" oninput="calculate()">
+            <select class="oil-unit" onchange="calculate()">
+                <option value="drops">💧 قطرة</option>
+                <option value="percent" selected>% نسبة</option>
+            </select>
+            <button class="btn-sm btn-danger" onclick="removeOilRow(this)" style="padding:8px 12px;">✕</button>
+        `;
+        document.getElementById('oils-container').appendChild(div);
+        calculate();
+        // تمرير للأسفل تلقائياً عند إضافة زيت جديد
+        const box = document.getElementById('oils-box');
+        if (box) { box.scrollTop = box.scrollHeight; syncThumb('oils-box','oils-thumb',null); }
+    }
+
+    function removeOilRow(btn) {
+        const row  = btn.closest('.oil-row');
+        const name = row.querySelector('.oil-name').value.trim();
+        const val  = row.querySelector('.oil-val').value.trim();
+        const hasData = name !== '' || (val !== '' && val !== '0');
+
+        if (hasData) {
+            const label = name || 'هذا الزيت';
+            confirmDelete('حذف الزيت من التركيبة', `هل تريد إزالة "${label}" من التركيبة؟`, () => {
+                row.remove();
+                calculate();
+                setTimeout(() => syncThumb('oils-box','oils-thumb',null), 50);
+            });
+        } else {
+            row.remove();
+            calculate();
+            setTimeout(() => syncThumb('oils-box','oils-thumb',null), 50);
+        }
+    }
+
+    // ========== CALCULATE ==========
+    function calculate() {
+        const totalMl = parseFloat(document.getElementById('total-ml').value) || 0;
+        const waterDrops = parseFloat(document.getElementById('water-drops').value) || 0;
+        const rows = document.querySelectorAll('.oil-row');
+
+        let oilHtml = '';
+        let totalOilMl = 0;
+
+        rows.forEach(row => {
+            const name = row.querySelector('.oil-name').value.trim() || 'زيت عطري';
+            const val = parseFloat(row.querySelector('.oil-val').value) || 0;
+            const unit = row.querySelector('.oil-unit').value;
+            let ml = 0, percent = 0, drops = 0;
+
+            if (unit === 'percent') {
+                percent = val; ml = (totalMl * percent) / 100; drops = Math.round(ml * 20);
+            } else {
+                drops = val; ml = drops / 20; percent = totalMl > 0 ? (ml / totalMl) * 100 : 0;
+            }
+
+            if (val > 0) {
+                oilHtml += `🧪 <strong>${name}</strong>: ${ml.toFixed(2)} مل (${drops} قطرة) – [${percent.toFixed(0)}%]<br>`;
+                totalOilMl += ml;
+            }
+        });
+
+        const waterMl = waterDrops / 15;
+        let alcoholMl = totalMl - totalOilMl - waterMl;
+        if (alcoholMl < 0) alcoholMl = 0;
+
+        const report = `
+            <strong>📋 التقرير التفصيلي للتركيبة</strong><br><br>
+            ${oilHtml}
+            <br>
+            💧 إجمالي الزيوت: <strong>${totalOilMl.toFixed(2)} مل</strong><br>
+            🌊 الماء المقطر: <strong>${waterMl.toFixed(2)} مل</strong> (${waterDrops} قطرة)<br>
+            🍷 الكحول النقي: <strong>${alcoholMl.toFixed(2)} مل</strong><br>
+            📊 الحجم الإجمالي: <strong>${totalMl.toFixed(2)} مل</strong>
+        `;
+        document.getElementById('current-report').innerHTML = report;
+        return report;
+    }
+
+    // ========== FAVORITES ==========
+    function savePerfume() {
+        const ar = document.getElementById('perfume-ar').value.trim() || 'عطر مميز';
+        const en = document.getElementById('perfume-en').value.trim() || 'Special Blend';
+        const report = document.getElementById('current-report').innerHTML;
+        favorites.push({ id: Date.now(), title: `${ar} | ${en}`, content: report });
+        localStorage.setItem('perfume_pro_v6', JSON.stringify(favorites));
+        renderFavs();
+        showToast('تم الحفظ في السجل ⭐');
+    }
+
+    function renderFavs() {
+        const list = document.getElementById('favorites-list');
+        const summary = document.getElementById('fav-summary');
+        list.innerHTML = '';
+
+        if (favorites.length === 0) {
+            summary.style.display = 'none';
+            list.innerHTML = `<p style="color:var(--text-muted);text-align:center;padding:30px 0;">السجل فارغ حالياً. احفظ أول تركيبة! 🌟</p>`;
+            setTimeout(() => syncThumb('fav-box','fav-thumb','fav-pos'), 50);
+            return;
+        }
+
+        // إجمالي السجل
+        let totalMlAll = 0;
+        favorites.forEach(fav => {
+            const m = fav.content.match(/الحجم الإجمالي.*?<strong>([\d.]+)/);
+            if (m) totalMlAll += parseFloat(m[1]) || 0;
+        });
+
+        const starredCount = favorites.filter(f => f.starred).length;
+
+        summary.style.display = 'flex';
+        summary.innerHTML = `
+            <div class="fav-stat">
+                <span class="fav-stat-num">${favorites.length}</span>
+                <span class="fav-stat-label">تركيبة محفوظة</span>
+            </div>
+            <div class="fav-stat starred-stat">
+                <span class="fav-stat-num">${starredCount}</span>
+                <span class="fav-stat-label">⭐ مفضلة</span>
+            </div>
+            <div class="fav-stat">
+                <span class="fav-stat-num">${totalMlAll.toFixed(0)}</span>
+                <span class="fav-stat-label">إجمالي المل</span>
+            </div>
+            <div class="fav-stat">
+                <span class="fav-stat-num">${new Date().toLocaleDateString('ar-SA',{month:'short',day:'numeric'})}</span>
+                <span class="fav-stat-label">آخر تحديث</span>
+            </div>
+        `;
+
+        // المفضلة أولاً ثم الأحدث
+        const sorted = [
+            ...[...favorites].filter(f => f.starred).reverse(),
+            ...[...favorites].filter(f => !f.starred).reverse()
+        ];
+
+        sorted.forEach(fav => {
+            const num = favorites.findIndex(f => f.id === fav.id) + 1;
+            const isStarred = !!fav.starred;
+            list.innerHTML += `
+                <div class="fav-item ${isStarred ? 'starred-item' : ''}">
+                    <div class="fav-header-row">
+                        <input type="checkbox" class="item-check fav-item-check"
+                            data-id="${fav.id}" onchange="updateBulkBar('fav')">
+                        <span class="fav-number">${num}</span>
+                        <span class="fav-header-title">${fav.title}</span>
+                        <button class="star-btn ${isStarred ? 'starred' : ''}"
+                            onclick="toggleStar(${fav.id})"
+                            title="${isStarred ? 'إزالة من المفضلة' : 'إضافة للمفضلة'}">⭐</button>
+                    </div>
+                    <div class="fav-content">${fav.content}</div>
+                    <button class="btn-sm btn-danger" style="margin-top:10px;" onclick="deleteFav(${fav.id})">حذف 🗑️</button>
+                </div>
+            `;
+        });
+        showBulkBarIfNeeded('fav', favorites.length);
+        setTimeout(() => syncThumb('fav-box','fav-thumb','fav-pos'), 50);
+    }
+
+    function toggleStar(id) {
+        const fav = favorites.find(f => f.id === id);
+        if (!fav) return;
+        fav.starred = !fav.starred;
+        localStorage.setItem('perfume_pro_v6', JSON.stringify(favorites));
+        renderFavs();
+        showToast(fav.starred ? 'تمت الإضافة للمفضلة ⭐' : 'تمت الإزالة من المفضلة');
+    }
+
+    function deleteFav(id) {
+        const fav = favorites.find(f => f.id === id);
+        confirmDelete('حذف العطر', `هل تريد حذف "${fav ? fav.title : 'هذا العطر'}"؟`, () => {
+            favorites = favorites.filter(f => f.id !== id);
+            localStorage.setItem('perfume_pro_v6', JSON.stringify(favorites));
+            renderFavs();
+            showToast('تم الحذف');
+        });
+    }
+
+    // ========== OIL CATALOG ==========
+    const catColors = {
+        'عود':'#c9a96e','مسك':'#b0c8e0','عنبر':'#e8c87a','زهور':'#e899b8',
+        'خشبي':'#a07840','حمضي':'#8ec97a','توابل':'#e07a5f','أخرى':'#9e9689'
+    };
+
+    function renderCatalog() {
+        const q = (document.getElementById('catalog-search')?.value || '').toLowerCase();
+        const filtered = oilCatalog.filter(o =>
+            o.name.toLowerCase().includes(q) ||
+            (o.note || '').toLowerCase().includes(q) ||
+            (o.category || '').toLowerCase().includes(q)
+        );
+        const tbody = document.getElementById('catalog-body');
+        const empty = document.getElementById('catalog-empty');
+        const count = document.getElementById('catalog-count');
+
+        count.textContent = `إجمالي الزيوت: ${oilCatalog.length} | المعروض: ${filtered.length}`;
+
+        if (filtered.length === 0) {
+            tbody.innerHTML = '';
+            empty.classList.remove('hidden');
+            setTimeout(() => syncThumb('catalog-box','catalog-thumb','catalog-pos'), 50);
+        } else {
+            empty.classList.add('hidden');
+            tbody.innerHTML = filtered.map(o => {
+                const color = catColors[o.category] || '#9e9689';
+                return `
+                <tr>
+                    <td>
+                        <div style="display:flex;align-items:center;gap:7px;">
+                            <input type="checkbox" class="item-check cat-item-check"
+                                data-id="${o.id}" onchange="updateBulkBar('cat')">
+                            <div>
+                                <span style="font-weight:700;">${o.name}</span><br>
+                                <span style="font-size:11px; background:${color}22; color:${color}; border:1px solid ${color}44; border-radius:10px; padding:1px 8px;">${o.category || ''}</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td><span class="price-badge">${o.price} ر.س / ${o.unit}</span></td>
+                    <td class="note-cell">${o.note || '—'}</td>
+                    <td>
+                        <div class="cat-actions">
+                            <button class="btn-ghost btn-sm" onclick="editOil(${o.id})">✏️</button>
+                            <button class="btn-sm btn-danger" onclick="deleteOil(${o.id})">🗑️</button>
+                            <button class="btn-sm btn-success" onclick="useOilInFormula('${o.name.replace(/'/g,"\\'")}')">+ تركيبة</button>
+                        </div>
+                    </td>
+                </tr>`;
+            }).join('');
+            showBulkBarIfNeeded('cat', filtered.length);
+            setTimeout(() => syncThumb('catalog-box','catalog-thumb','catalog-pos'), 50);
+        }
+    }
+
+    function saveCatalog() {
+        localStorage.setItem('perfume_oil_catalog', JSON.stringify(oilCatalog));
+    }
+
+    function toggleAddOilForm() {
+        const form = document.getElementById('add-oil-form');
+        const isHidden = form.classList.contains('hidden');
+        if (isHidden) {
+            cancelOilForm();
+            form.classList.remove('hidden');
+            form.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        } else {
+            form.classList.add('hidden');
+        }
+    }
+
+    function cancelOilForm() {
+        document.getElementById('edit-oil-id').value = '';
+        document.getElementById('oil-name-input').value = '';
+        document.getElementById('oil-price-input').value = '';
+        document.getElementById('oil-note-input').value = '';
+        document.getElementById('oil-unit-price').value = 'جم';
+        document.getElementById('oil-category').value = 'عود';
+        document.getElementById('oil-form-title').textContent = '➕ إضافة زيت جديد';
+        document.getElementById('add-oil-form').classList.add('hidden');
+    }
+
+    function saveOilEntry() {
+        const id = document.getElementById('edit-oil-id').value;
+        const name = document.getElementById('oil-name-input').value.trim();
+        const price = parseFloat(document.getElementById('oil-price-input').value) || 0;
+        const unit = document.getElementById('oil-unit-price').value;
+        const category = document.getElementById('oil-category').value;
+        const note = document.getElementById('oil-note-input').value.trim();
+
+        if (!name) return showToast('أدخل اسم الزيت');
+
+        if (id) {
+            const idx = oilCatalog.findIndex(o => o.id == id);
+            if (idx > -1) oilCatalog[idx] = { id: parseInt(id), name, price, unit, category, note };
+            showToast('تم تحديث الزيت ✅');
+        } else {
+            oilCatalog.push({ id: Date.now(), name, price, unit, category, note });
+            showToast('تم إضافة الزيت 🧴');
+        }
+        saveCatalog();
+        renderCatalog();
+        cancelOilForm();
+    }
+
+    function editOil(id) {
+        const oil = oilCatalog.find(o => o.id === id);
+        if (!oil) return;
+        document.getElementById('edit-oil-id').value = oil.id;
+        document.getElementById('oil-name-input').value = oil.name;
+        document.getElementById('oil-price-input').value = oil.price;
+        document.getElementById('oil-unit-price').value = oil.unit || 'جم';
+        document.getElementById('oil-category').value = oil.category || 'أخرى';
+        document.getElementById('oil-note-input').value = oil.note || '';
+        document.getElementById('oil-form-title').textContent = '✏️ تعديل الزيت';
+        const form = document.getElementById('add-oil-form');
+        form.classList.remove('hidden');
+        form.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function deleteOil(id) {
+        const o = oilCatalog.find(o => o.id === id);
+        confirmDelete('حذف الزيت', `هل تريد حذف "${o ? o.name : 'هذا الزيت'}"؟`, () => {
+            oilCatalog = oilCatalog.filter(o => o.id !== id);
+            saveCatalog();
+            renderCatalog();
+            showToast('تم حذف الزيت 🗑️');
+        });
+    }
+
+    function useOilInFormula(name) {
+        const appSection = document.getElementById('app-section');
+        appSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // add new row pre-filled with this oil name
+        const div = document.createElement('div');
+        div.className = 'oil-row';
+        div.innerHTML = `
+            <input type="text" class="oil-name" value="${name}">
+            <input type="number" class="oil-val" value="0" oninput="calculate()">
+            <select class="oil-unit" onchange="calculate()">
+                <option value="drops" selected>💧 قطرة</option>
+                <option value="percent">% نسبة</option>
+            </select>
+            <button class="btn-sm btn-danger" onclick="removeOilRow(this)" style="padding:8px 12px;">✕</button>
+        `;
+        document.getElementById('oils-container').appendChild(div);
+        calculate();
+        const box = document.getElementById('oils-box');
+        if (box) { box.scrollTop = box.scrollHeight; syncThumb('oils-box','oils-thumb',null); }
+        showToast('تمت الإضافة إلى التركيبة 🧪');
+    }
+
+    // ========== UTILITIES ==========
+    function generatePerfumeName() {
+        const gender = document.getElementById('name-gender').value;
+        const list = nameBank[gender];
+        document.getElementById('perfume-ar').value = list[Math.floor(Math.random() * list.length)];
+        document.getElementById('perfume-en').value = 'Premium Blend';
+    }
+
+    function shareApp() {
+        const text = 'تطبيق مستشار العطور الذكي – صياغة عطرك بدقة احترافية';
+        if (navigator.share) navigator.share({ title: 'مستشار العطور', text, url: window.location.href });
+        else showToast('المشاركة غير متاحة على هذا الجهاز');
+    }
+
+    function shareComp() {
+        const text = document.getElementById('current-report').innerText;
+        if (navigator.share) navigator.share({ title: 'تركيبة عطرية', text });
+        else showToast('المشاركة غير متاحة على هذا الجهاز');
+    }
+
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        t.innerText = msg;
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 2800);
+    }
+
+    // ========== PURCHASES ==========
+    let purchasesOpen = false;
+    let catalogOpen   = false;
+
+    function toggleCatalog() {
+        catalogOpen = !catalogOpen;
+        const body  = document.getElementById('catalog-body-wrap');
+        const arrow = document.getElementById('catalog-arrow');
+        body.classList.toggle('open', catalogOpen);
+        arrow.classList.toggle('open', catalogOpen);
+        if (catalogOpen) setTimeout(() => syncThumb('catalog-box','catalog-thumb','catalog-pos'), 420);
+    }
+
+    function togglePurchases() {
+        purchasesOpen = !purchasesOpen;
+        const body   = document.getElementById('purchases-body');
+        const arrow  = document.getElementById('purchases-arrow');
+        body.classList.toggle('open', purchasesOpen);
+        arrow.classList.toggle('open', purchasesOpen);
+        if (purchasesOpen) setTimeout(() => syncThumb('pur-box','pur-thumb','pur-pos'), 420);
+    }
+
+    function addPurchase() {
+        const name  = document.getElementById('pur-name').value.trim();
+        const price = parseFloat(document.getElementById('pur-price').value) || 0;
+        const qty   = document.getElementById('pur-qty').value.trim();
+        const place = document.getElementById('pur-place').value.trim();
+        const note  = document.getElementById('pur-note').value.trim();
+        if (!name) return showToast('أدخل اسم الزيت');
+
+        purchases.push({ id: Date.now(), name, price, qty, place, note,
+            date: new Date().toLocaleDateString('ar-SA', { year:'numeric', month:'short', day:'numeric' }) });
+        localStorage.setItem('perfume_purchases', JSON.stringify(purchases));
+
+        // مسح الحقول
+        ['pur-name','pur-price','pur-qty','pur-place','pur-note'].forEach(id => {
+            document.getElementById(id).value = '';
+        });
+        renderPurchases();
+        showToast('تمت إضافة المشتريات 🛒');
+    }
+
+    function deletePurchase(id) {
+        const p = purchases.find(p => p.id === id);
+        confirmDelete('حذف المشتريات', `هل تريد حذف "${p ? p.name : 'هذا العنصر'}"؟`, () => {
+            purchases = purchases.filter(p => p.id !== id);
+            localStorage.setItem('perfume_purchases', JSON.stringify(purchases));
+            renderPurchases();
+            showToast('تم الحذف');
+        });
+    }
+
+    function renderPurchases() {
+        const tbody   = document.getElementById('purchases-body-table');
+        const empty   = document.getElementById('purchases-empty');
+        const summary = document.getElementById('purchases-summary');
+        if (!tbody) return;
+
+        tbody.innerHTML = '';
+
+        if (purchases.length === 0) {
+            empty.style.display = 'block';
+            summary.style.display = 'none';
+            setTimeout(() => syncThumb('pur-box','pur-thumb','pur-pos'), 50);
+            return;
+        }
+
+        empty.style.display = 'none';
+
+        // إجمالي المبلغ
+        const totalSpent = purchases.reduce((s, p) => s + (p.price || 0), 0);
+        const uniquePlaces = [...new Set(purchases.map(p => p.place).filter(Boolean))].length;
+
+        summary.style.display = 'flex';
+        summary.innerHTML = `
+            <div class="psum-item">🛒 <span class="psum-label">عدد المشتريات:</span>
+                <span class="psum-val">${purchases.length}</span></div>
+            <div class="psum-item">💰 <span class="psum-label">إجمالي الإنفاق:</span>
+                <span class="psum-val">${totalSpent.toLocaleString()} ر.س</span></div>
+            <div class="psum-item">📍 <span class="psum-label">أماكن الشراء:</span>
+                <span class="psum-val">${uniquePlaces}</span></div>
+        `;
+
+        [...purchases].reverse().forEach((p, idx) => {
+            const num = purchases.length - idx;
+            tbody.innerHTML += `
+                <tr>
+                    <td style="color:var(--text-muted);font-size:12px;">
+                        <input type="checkbox" class="item-check pur-item-check"
+                            data-id="${p.id}" onchange="updateBulkBar('pur')"
+                            style="margin-left:4px;">
+                        ${num}
+                    </td>
+                    <td><strong>${p.name}</strong><br>
+                        <span style="font-size:11px;color:var(--text-muted);">${p.date || ''}</span></td>
+                    <td style="color:var(--text-muted);font-size:12.5px;">${p.qty || '—'}</td>
+                    <td class="td-price">${p.price ? p.price.toLocaleString() + ' ر.س' : '—'}</td>
+                    <td class="td-place">${p.place || '—'}</td>
+                    <td class="td-note">${p.note || '—'}</td>
+                    <td><button class="btn-sm btn-danger" onclick="deletePurchase(${p.id})" style="padding:5px 10px;">🗑️</button></td>
+                </tr>`;
+        });
+        showBulkBarIfNeeded('pur', purchases.length);
+        setTimeout(() => syncThumb('pur-box','pur-thumb','pur-pos'), 50);
+    }
+
+    // ========== INTERNAL SCROLL HELPERS ==========
+    function syncThumb(boxId, thumbId, labelId) {
+        const box = document.getElementById(boxId);
+        const thumb = document.getElementById(thumbId);
+        const label = document.getElementById(labelId);
+        if (!box || !thumb) return;
+
+        const trackH = box.parentElement.querySelector('.custom-scrollbar').clientHeight;
+        const ratio = box.clientHeight / box.scrollHeight;
+        const thumbH = Math.max(30, trackH * ratio);
+        const maxScroll = box.scrollHeight - box.clientHeight;
+        const pct = maxScroll > 0 ? box.scrollTop / maxScroll : 0;
+        const thumbTop = pct * (trackH - thumbH);
+
+        thumb.style.height = thumbH + 'px';
+        thumb.style.top = thumbTop + 'px';
+
+        if (label) {
+            if (maxScroll <= 0) {
+                label.textContent = 'كل المحتوى مرئي';
+            } else {
+                const visiblePct = Math.round(pct * 100);
+                label.textContent = visiblePct === 0 ? 'البداية ▲' : visiblePct >= 98 ? 'النهاية ▼' : `${visiblePct}%`;
+            }
+        }
+    }
+
+    function scrollBox(boxId, delta) {
+        const box = document.getElementById(boxId);
+        if (!box) return;
+        box.scrollBy({ top: delta, behavior: 'smooth' });
+    }
+
+    function trackClick(e, boxId, thumbId) {
+        const track = e.currentTarget;
+        const box = document.getElementById(boxId);
+        if (!box) return;
+        const rect = track.getBoundingClientRect();
+        const clickPct = (e.clientY - rect.top) / rect.height;
+        const maxScroll = box.scrollHeight - box.clientHeight;
+        box.scrollTo({ top: clickPct * maxScroll, behavior: 'smooth' });
+    }
+
+    function setTheme(name) {
+        const t = themes[name];
+        if (!t) return;
+        const r = document.documentElement.style;
+        r.setProperty('--primary', t.primary);
+        r.setProperty('--primary-dark', t.primaryDark);
+        r.setProperty('--primary-light', t.primaryLight);
+        r.setProperty('--accent', t.accent);
+        r.setProperty('--bg', t.bg);
+        r.setProperty('--bg2', t.bg2);
+    }
+
+    // ========== CONFIRM MODAL ==========
+    let _confirmCallback = null;
+
+    function confirmDelete(title, msg, onConfirm) {
+        document.getElementById('modal-title').textContent = title;
+        document.getElementById('modal-msg').textContent   = msg;
+        _confirmCallback = onConfirm;
+        document.getElementById('confirm-modal').classList.add('active');
+    }
+
+    function closeModal(e) {
+        if (e && e.target !== document.getElementById('confirm-modal')) return;
+        document.getElementById('confirm-modal').classList.remove('active');
+        _confirmCallback = null;
+    }
+
+    document.getElementById('modal-confirm-btn').onclick = function() {
+        if (_confirmCallback) _confirmCallback();
+        document.getElementById('confirm-modal').classList.remove('active');
+        _confirmCallback = null;
+    };
+
+    // ========== BULK SELECT & DELETE ==========
+    // كل قسم له: prefix (fav / pur / cat) ومصفوفته ومفتاح الـ localStorage
+    const sectionMeta = {
+        fav: { getArr: () => favorites, setArr: v => { favorites = v; }, key: 'perfume_pro_v6',   render: renderFavs,      checkClass: 'fav-item-check'  },
+        pur: { getArr: () => purchases, setArr: v => { purchases = v; }, key: 'perfume_purchases', render: renderPurchases,  checkClass: 'pur-item-check'  },
+        cat: { getArr: () => oilCatalog,setArr: v => { oilCatalog = v;},key: 'perfume_oil_catalog',render: renderCatalog,   checkClass: 'cat-item-check'  },
+    };
+
+    function getCheckedIds(prefix) {
+        return [...document.querySelectorAll(`.${sectionMeta[prefix].checkClass}:checked`)]
+               .map(cb => parseInt(cb.dataset.id));
+    }
+
+    function updateBulkBar(prefix) {
+        const ids    = getCheckedIds(prefix);
+        const count  = ids.length;
+        const total  = document.querySelectorAll(`.${sectionMeta[prefix].checkClass}`).length;
+        const selAll = document.getElementById(`${prefix}-select-all`);
+        const selCount = document.getElementById(`${prefix}-sel-count`);
+        const delBtn = document.getElementById(`${prefix}-bulk-del-btn`);
+        if (selAll) selAll.checked = count > 0 && count === total;
+        if (selCount) selCount.textContent = `${count} محدد`;
+        if (delBtn) delBtn.disabled = count === 0;
+    }
+
+    function toggleSelectAll(prefix) {
+        const checked = document.getElementById(`${prefix}-select-all`).checked;
+        document.querySelectorAll(`.${sectionMeta[prefix].checkClass}`)
+            .forEach(cb => { cb.checked = checked; });
+        updateBulkBar(prefix);
+    }
+
+    function bulkDelete(prefix) {
+        const ids = getCheckedIds(prefix);
+        if (!ids.length) return;
+        confirmDelete(
+            'حذف العناصر المحددة',
+            `سيتم حذف ${ids.length} عنصر بشكل نهائي. لا يمكن التراجع عن هذا الإجراء.`,
+            () => {
+                const meta = sectionMeta[prefix];
+                meta.setArr(meta.getArr().filter(item => !ids.includes(item.id)));
+                localStorage.setItem(meta.key, JSON.stringify(meta.getArr()));
+                meta.render();
+                showToast(`تم حذف ${ids.length} عنصر 🗑️`);
+            }
+        );
+    }
+
+    // ربط showBulkBar بعد كل render
+    function showBulkBarIfNeeded(prefix, count) {
+        const bar = document.getElementById(`${prefix}-bulk-bar`);
+        if (bar) bar.style.display = count > 0 ? 'flex' : 'none';
+    }
+
+</script>
+</body>
+</html>
