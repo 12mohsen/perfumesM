@@ -2,6 +2,13 @@
 //  main.js  |  العطور الذكي
 // ============================================================
 
+// ============================================================
+//  ★ روابط المشاركة — غيّرها هنا عند الحاجة
+// ============================================================
+const SHARE_WEB_URL = 'https://perfumesm.netlify.app/';          // ← رابط الموقع
+const SHARE_APK_URL = 'https://www.appcreator24.com/app4016532-odbv3t'; // ← رابط APK
+// ============================================================
+
 // ──── الحالة العامة ────
 let currentUser     = null;
 let purchases       = [];
@@ -153,6 +160,16 @@ async function handleLogin() {
         await showApp();
     } catch(e) { showErr('login-err', e.message); }
     finally { setLoading('login-btn', false); }
+}
+
+// ============================================================
+//  المشاركة
+// ============================================================
+function showShareModal() {
+    document.getElementById('share-modal').classList.remove('hidden');
+}
+function hideShareModal() {
+    document.getElementById('share-modal').classList.add('hidden');
 }
 
 function logout() {
@@ -449,13 +466,24 @@ function addOilRow() {
     if (!container) return;
     const div = document.createElement('div');
     div.className = 'f-oil-row';
+    // data-entry يتتبع آخر حقل استخدمه المستخدم للإدخال
     div.innerHTML = `
         <input type="text"   class="f-oil-name" placeholder="مثال: عنبر" oninput="calcFormula()">
-        <input type="number" class="f-oil-pct"  placeholder="%" min="0" max="100" oninput="calcFormula()">
-        <span  class="f-oil-ml muted">0 مل</span>
-        <span  class="f-oil-dr muted">0 قطرة</span>
+        <input type="number" class="f-oil-pct"  placeholder="%" min="0" max="100" step="0.1"
+               oninput="setEntry(this,'pct'); calcFormula()">
+        <input type="number" class="f-oil-ml" placeholder="مل" min="0" step="0.1"
+               title="أدخل المل مباشرةً"
+               oninput="setEntry(this,'ml'); calcFromMl(this)">
+        <input type="number" class="f-oil-dr" placeholder="قطرة" min="0" step="1"
+               title="أدخل عدد القطرات"
+               oninput="setEntry(this,'drops'); calcFromDrops(this)">
         <button class="icon-btn danger" onclick="removeOilRow(this)">✕</button>`;
     container.appendChild(div);
+}
+
+/** يحفظ طريقة الإدخال في الصف */
+function setEntry(input, mode) {
+    input.closest('.f-oil-row').dataset.entry = mode;
 }
 
 function removeOilRow(btn) {
@@ -467,18 +495,51 @@ function removeOilRow(btn) {
     calcFormula();
 }
 
-function calcFormula() {
+/** المستخدم كتب في حقل المل → احسب النسبة والقطرات */
+function calcFromMl(input) {
+    const row   = input.closest('.f-oil-row');
+    const ml    = parseFloat(input.value) || 0;
+    const vol   = parseFloat(document.getElementById('formula-vol').value) || 0;
+    const pct   = vol > 0 ? (ml / vol) * 100 : 0;
+    const drops = Math.round(ml * 20);
+    const pctEl = row.querySelector('.f-oil-pct');
+    const drEl  = row.querySelector('.f-oil-dr');
+    if (pctEl) pctEl.value = pct > 0 ? parseFloat(pct.toFixed(2)) : '';
+    if (drEl && document.activeElement !== drEl) drEl.value = drops > 0 ? drops : '';
+    calcFormula(true);
+}
+
+/** المستخدم كتب في حقل القطرات → احسب المل والنسبة */
+function calcFromDrops(input) {
+    const row   = input.closest('.f-oil-row');
+    const drops = parseFloat(input.value) || 0;
+    const vol   = parseFloat(document.getElementById('formula-vol').value) || 0;
+    const ml    = drops / 20;
+    const pct   = vol > 0 ? (ml / vol) * 100 : 0;
+    const pctEl = row.querySelector('.f-oil-pct');
+    const mlEl  = row.querySelector('.f-oil-ml');
+    if (pctEl) pctEl.value = pct > 0 ? parseFloat(pct.toFixed(2)) : '';
+    if (mlEl && document.activeElement !== mlEl) mlEl.value = ml > 0 ? parseFloat(ml.toFixed(2)) : '';
+    calcFormula(true);
+}
+
+function calcFormula(skipFieldsUpdate = false) {
     const vol    = parseFloat(document.getElementById('formula-vol').value) || 0;
     const wdrops = parseFloat(document.getElementById('formula-water').value) || 0;
     const wml    = wdrops / 20;
     const rows   = document.querySelectorAll('.f-oil-row');
     let totalOilMl = 0, totalPct = 0;
     rows.forEach(row => {
-        const pct = parseFloat(row.querySelector('.f-oil-pct').value) || 0;
-        const ml  = (pct * vol) / 100;
-        const dr  = Math.round(ml * 20);
-        row.querySelector('.f-oil-ml').textContent = ml.toFixed(2) + ' مل';
-        row.querySelector('.f-oil-dr').textContent = dr + ' قطرة';
+        const pct   = parseFloat(row.querySelector('.f-oil-pct').value) || 0;
+        const ml    = (pct * vol) / 100;
+        const drops = Math.round(ml * 20);
+        const mlEl  = row.querySelector('.f-oil-ml');
+        const drEl  = row.querySelector('.f-oil-dr');
+        // لا تُحدّث حقل المل أو القطرات إذا كان المستخدم يكتب فيه الآن
+        if (mlEl && !skipFieldsUpdate && document.activeElement !== mlEl)
+            mlEl.value = ml > 0 ? parseFloat(ml.toFixed(2)) : '';
+        if (drEl && !skipFieldsUpdate && document.activeElement !== drEl)
+            drEl.value = drops > 0 ? drops : '';
         totalOilMl += ml; totalPct += pct;
     });
     const alcoholMl  = Math.max(0, vol - totalOilMl - wml);
@@ -522,8 +583,9 @@ async function saveFormula() {
     const oils = rows.map(row => ({
         name:    row.querySelector('.f-oil-name').value.trim(),
         percent: parseFloat(row.querySelector('.f-oil-pct').value) || 0,
-        ml:      parseFloat(row.querySelector('.f-oil-ml').textContent) || 0,
-        drops:   parseInt(row.querySelector('.f-oil-dr').textContent)   || 0
+        ml:      parseFloat(row.querySelector('.f-oil-ml').value)  || 0,
+        drops:   parseInt(row.querySelector('.f-oil-dr').value)    || 0,
+        entry:   row.dataset.entry || 'pct'   // pct | ml | drops
     })).filter(o => o.name && o.percent > 0);
     if (oils.length === 0) return showToast('أضف زيتاً واحداً على الأقل ⚠️', 'warn');
     if (formulas.some(f => f.formula_name === nameAr))
@@ -556,10 +618,30 @@ function renderFavorites() {
         grid.innerHTML = `<p class="empty-msg">لا توجد تركيبات محفوظة بعد</p>`;
         updateFavBulkBar(); return;
     }
-    grid.innerHTML = list.map(f => {
-        const d    = f.formula_details || {};
-        const oils = (d.oils || []).map(o =>
-            `<span class="oil-tag">${esc(o.name)} ${o.percent}%</span>`).join('');
+    grid.innerHTML = list.map((f, idx) => {
+        const d      = f.formula_details || {};
+        const vol    = parseFloat(f.total_volume) || 0;
+        const oils   = (d.oils || []).map(o => {
+            const ml    = o.ml ?? ((o.percent * vol) / 100);
+            const entry = o.entry || 'pct';
+            let detail;
+            if (entry === 'drops' && o.drops > 0) {
+                detail = `<span class="oil-tag-drops">${o.drops} قطرة</span>`;
+            } else if (entry === 'ml' && ml > 0) {
+                detail = `<span class="oil-tag-ml">= ${ml.toFixed(1)} مل</span>`;
+            } else {
+                detail = `<span class="oil-tag-pct">${o.percent}%</span>
+                          <span class="oil-tag-ml">= ${ml.toFixed(1)} مل</span>`;
+            }
+            return `<span class="oil-tag">
+                        <span class="oil-tag-name">${esc(o.name)}</span>
+                        ${detail}
+                    </span>`;
+        }).join('');
+        const waterDrops = d.water_drops || 0;
+        const waterSpan  = waterDrops > 0
+            ? `<span>💧 ${waterDrops} قطرة ماء</span>`
+            : '';
         return `
         <div class="fav-card" data-id="${f.id}">
             <div class="fav-card-head">
@@ -568,6 +650,7 @@ function renderFavorites() {
                         ${selectedFavIds.has(f.id) ? 'checked' : ''}
                         onchange="toggleFavSel('${f.id}',this.checked)">
                 </label>
+                <span class="fav-seq">${idx + 1}</span>
                 <div class="fav-title">
                     <strong>${esc(f.formula_name)}</strong>
                     ${d.name_en ? `<span class="muted">${esc(d.name_en)}</span>` : ''}
@@ -575,9 +658,9 @@ function renderFavorites() {
                 <button class="icon-btn danger" onclick="moveFavToTrash('${f.id}')">🗑️</button>
             </div>
             <div class="fav-meta">
-                <span>📦 ${f.total_volume} مل</span>
+                <span>📦 ${vol} مل</span>
                 <span>🍷 ${(d.alcohol_ml||0).toFixed(1)} مل كحول</span>
-                <span>💧 ${(d.water_drops||0)} قطرة ماء</span>
+                ${waterSpan}
                 <span class="muted">${fmtDate(f.created_at)}</span>
             </div>
             <div class="oil-tags">${oils}</div>

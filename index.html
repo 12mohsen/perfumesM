@@ -315,6 +315,45 @@ label { font-size: 13px; color: var(--muted); display: block; margin-bottom: 5px
 .user-info span:first-child { font-size: 13px; color: var(--muted); }
 .user-info strong { font-size: 14px; }
 
+/* زر المشاركة */
+.btn-share {
+  background: rgba(201,168,76,.12);
+  border: 1px solid rgba(201,168,76,.35);
+  color: var(--primary-l);
+  border-radius: 8px;
+  padding: 6px 13px;
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background .2s, border-color .2s;
+  white-space: nowrap;
+}
+.btn-share:hover { background: rgba(201,168,76,.22); border-color: var(--primary); }
+
+/* أزرار المشاركة داخل Modal */
+.share-btn {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  text-decoration: none;
+  color: var(--text);
+  transition: border-color .2s, background .2s;
+  cursor: pointer;
+}
+.share-btn:hover { border-color: var(--primary); background: rgba(201,168,76,.07); }
+.share-btn-web:hover { border-color: #3ecfcf; }
+.share-btn-apk:hover { border-color: #4caf80; }
+.share-icon { font-size: 26px; flex-shrink: 0; }
+.share-text { flex: 1; text-align: right; }
+.share-text strong { display: block; font-size: 14px; margin-bottom: 2px; }
+.share-text small   { color: var(--muted); font-size: 11px; word-break: break-all; }
+.share-arrow { color: var(--muted); font-size: 18px; flex-shrink: 0; }
+
 .btn-logout {
   background: transparent;
   border: 1px solid var(--border);
@@ -521,12 +560,20 @@ input[type="checkbox"].item-check {
   border-bottom: 1px solid var(--border);
 }
 .f-oil-row:last-child { border-bottom: none; }
+/* حقل المل والقطرات — كلاهما قابل للكتابة */
 .f-oil-ml, .f-oil-dr {
+  background: rgba(255,255,255,.04);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
   font-size: 13px;
-  color: var(--muted);
   text-align: center;
-  white-space: nowrap;
+  padding: 5px 6px;
+  width: 100%;
+  transition: border-color .2s;
 }
+.f-oil-ml::placeholder, .f-oil-dr::placeholder { color: var(--muted); font-size: 12px; }
+.f-oil-ml:focus, .f-oil-dr:focus { outline: none; border-color: var(--primary); }
 
 /* شبكة النتائج */
 .result-grid {
@@ -580,6 +627,21 @@ input[type="checkbox"].item-check {
   gap: 10px;
 }
 .check-wrap { flex-shrink: 0; padding-top: 3px; }
+.fav-seq {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  background: rgba(201,168,76,.15);
+  border: 1px solid rgba(201,168,76,.3);
+  border-radius: 50%;
+  color: var(--primary-l);
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+}
 .fav-title {
   flex: 1;
   display: flex;
@@ -605,13 +667,20 @@ input[type="checkbox"].item-check {
 
 .oil-tags { display: flex; flex-wrap: wrap; gap: 6px; }
 .oil-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   font-size: 12px;
   background: rgba(201,168,76,.1);
   border: 1px solid rgba(201,168,76,.25);
   color: var(--primary-l);
-  padding: 3px 10px;
+  padding: 4px 10px;
   border-radius: 20px;
 }
+.oil-tag-name   { font-weight: 600; }
+.oil-tag-pct    { opacity: .75; }
+.oil-tag-ml,
+.oil-tag-drops  { opacity: .6; font-size: 11px; border-right: 1px solid rgba(201,168,76,.3); padding-right: 6px; margin-right: 2px; }
 
 .empty-msg {
   text-align: center;
@@ -1019,6 +1088,41 @@ input[type="checkbox"].item-check {
   .auth-card { padding: 22px 18px; }
   .fav-grid { grid-template-columns: 1fr; }
   .result-grid { grid-template-columns: 1fr 1fr; }
+
+  /* ══ مخزن الزيوت على الجوال ══ */
+  /* رأس الجدول */
+  .oil-table-head { display: none; }
+
+  /* كل صف يصبح بطاقة بسطرين */
+  .oil-table-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 8px;
+  }
+  /* السطر الأول: checkbox + اسم + سعر */
+  .oil-table-row .item-check  { order: 1; flex-shrink: 0; }
+  .oil-table-row .oil-name-cell { order: 2; flex: 1; min-width: 0; }
+  .oil-table-row .oil-price-badge { order: 3; flex-shrink: 0; }
+  /* الملاحظة — مخفية على الجوال لضيق المساحة */
+  .oil-table-row .oil-note-cell { display: none; }
+  /* السطر الثاني: أزرار الإجراءات — تمتد على عرض كامل */
+  .oil-table-row .oil-actions-cell {
+    order: 4;
+    width: 100%;
+    justify-content: flex-end;
+    padding-top: 6px;
+    border-top: 1px solid var(--border);
+    margin-top: 4px;
+  }
+  /* أزرار أكبر قليلاً للمس */
+  .btn-add-formula, .btn-del-oil, .btn-edit-oil {
+    padding: 7px 14px;
+    font-size: 13px;
+  }
+  /* زر المشاركة في الهيدر — أصغر */
+  .btn-share { padding: 5px 9px; font-size: 12px; }
 }
 </style>
 </head>
@@ -1141,6 +1245,7 @@ input[type="checkbox"].item-check {
         <div class="theme-dot"        data-theme="rose"   onclick="setTheme('rose')"   title="وردي"></div>
         <div class="theme-dot"        data-theme="purple" onclick="setTheme('purple')" title="بنفسجي"></div>
       </div>
+      <button class="btn-share" onclick="showShareModal()" title="مشاركة التطبيق">🔗 مشاركة</button>
       <button class="icon-btn" onclick="showChangePwd()" title="تغيير كلمة المرور"
               style="font-size:17px;border:none;padding:6px 8px;">⚙️</button>
       <button class="btn-logout" onclick="logout()">خروج ↩</button>
@@ -1352,8 +1457,8 @@ input[type="checkbox"].item-check {
                     padding:6px 0 8px;border-bottom:1px solid var(--border);margin-bottom:4px;">
           <span style="font-size:12px;color:var(--muted);">اسم الزيت</span>
           <span style="font-size:12px;color:var(--muted);text-align:center;">النسبة %</span>
-          <span style="font-size:12px;color:var(--muted);text-align:center;">مل</span>
-          <span style="font-size:12px;color:var(--muted);text-align:center;">قطرات</span>
+          <span style="font-size:12px;color:var(--muted);text-align:center;">مل ✏️</span>
+          <span style="font-size:12px;color:var(--muted);text-align:center;">قطرات ✏️</span>
           <span></span>
         </div>
         <div id="formula-oils"></div>
@@ -1647,9 +1752,52 @@ input[type="checkbox"].item-check {
 <script src="supabase.js"></script>
 <script src="main.js"></script>
 
+<!-- ════════════════════════════════════
+     Modal المشاركة
+════════════════════════════════════ -->
+<div id="share-modal" class="modal-overlay hidden" onclick="if(event.target===this)hideShareModal()">
+  <div class="modal-box" style="max-width:420px;text-align:center;">
+    <h3 style="margin-bottom:6px;">🔗 شارك التطبيق</h3>
+    <p style="color:var(--muted);font-size:13px;margin-bottom:22px;">اختر طريقة الوصول</p>
+
+    <!-- ══ الرابط ١: الموقع ══ -->
+    <a id="share-web-link" href="" target="_blank" rel="noopener" class="share-btn share-btn-web">
+      <span class="share-icon">🌐</span>
+      <span class="share-text">
+        <strong>افتح في المتصفح</strong>
+        <small id="share-web-url-label"></small>
+      </span>
+      <span class="share-arrow">←</span>
+    </a>
+
+    <!-- ══ الرابط ٢: APK ══ -->
+    <a id="share-apk-link" href="" target="_blank" rel="noopener" class="share-btn share-btn-apk">
+      <span class="share-icon">📱</span>
+      <span class="share-text">
+        <strong>حمّل تطبيق Android</strong>
+        <small>ملف APK — مباشر</small>
+      </span>
+      <span class="share-arrow">←</span>
+    </a>
+
+    <button class="btn-secondary" style="margin-top:18px;width:100%;" onclick="hideShareModal()">إغلاق</button>
+  </div>
+</div>
+
 <script>
   // السنة في الفوتر
   document.getElementById('footer-year').textContent = new Date().getFullYear();
+
+  // ══ ربط روابط المشاركة بالثوابت من main.js ══
+  // (يعمل بعد تحميل main.js لأنه في نهاية الصفحة)
+  document.addEventListener('DOMContentLoaded', () => {
+    const webLink  = document.getElementById('share-web-link');
+    const apkLink  = document.getElementById('share-apk-link');
+    const webLabel = document.getElementById('share-web-url-label');
+    if (webLink)  webLink.href  = SHARE_WEB_URL;
+    if (apkLink)  apkLink.href  = SHARE_APK_URL;
+    if (webLabel) webLabel.textContent = SHARE_WEB_URL;
+  });
 </script>
 
 </body>
