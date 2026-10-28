@@ -143,6 +143,29 @@ async function dbGetPassHint(userId) {
     return res.hint || '';
 }
 
+/** إعادة التعيين بالتلميح — المنفذ الوحيد لاستعادة حساب نُسيت كلمته.
+ *  القاعدة تطابق التلميح وتبطل كل جلسات الحساب القديمة.
+ *  ملاحظة مقصودة: التلميح مكشوف في الخطوة السابقة، فالمطابقة شكلية —
+ *  وهو نفس سلوك بقية التطبيقات. */
+async function dbResetWithHint(userId, hint, newPassword) {
+    const u = (userId || '').trim();
+    if (!u) throw new Error('اكتب اسم المستخدم أولاً');
+    if (!newPassword || newPassword.length < 4)
+        throw new Error('كلمة المرور يجب أن تكون 4 أحرف على الأقل');
+
+    const res = await rpc('app_reset_with_hint', {
+        p_user: u, p_hint: hint || '', p_newpass: newPassword
+    });
+    if (!res?.ok) {
+        const err = res?.error || '';
+        if (err === 'hint_mismatch')  throw new Error('لا يوجد تلميح محفوظ لهذا الحساب — تعذّرت إعادة التعيين');
+        if (err === 'locked')         throw new Error('أُقفل الحساب مؤقتاً بعد محاولات كثيرة — انتظر ١٥ دقيقة');
+        if (err === 'user_not_found') throw new Error('اسم المستخدم غير مسجّل');
+        throw new Error('تعذّر التغيير (' + (err || 'غير معروف') + ')');
+    }
+    setSessionToken(null);
+}
+
 async function dbUpdatePassHint(_userId, hint) {
     await rpcAuth('perf_set_hint', { p_hint: hint || '' });
 }

@@ -245,6 +245,95 @@ async function showPassHint() {
 }
 
 // ============================================================
+//  إعادة تعيين كلمة المرور  (نسيت كلمة المرور)
+//  خطوتان: كشف التلميح ← كلمة مرور جديدة ثم دخول تلقائي
+// ============================================================
+let _resetUser = '';
+let _resetHint = '';
+
+function openResetModal() {
+    _resetUser = ''; _resetHint = '';
+    document.getElementById('reset-user').value =
+        document.getElementById('login-user').value.trim();
+    ['reset-pass','reset-pass2','reset-hint-new']
+        .forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+    const hb = document.getElementById('reset-hint-box');
+    if (hb) hb.classList.add('hidden');
+    showErr('reset-err1', ''); showErr('reset-err2', '');
+    showResetStep(1);
+    document.getElementById('reset-modal').classList.remove('hidden');
+    setTimeout(() => document.getElementById('reset-user').focus(), 80);
+}
+
+function closeResetModal() {
+    document.getElementById('reset-modal').classList.add('hidden');
+    _resetUser = ''; _resetHint = '';
+    ['reset-pass','reset-pass2','reset-hint-new']
+        .forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+}
+
+function showResetStep(n) {
+    document.getElementById('reset-step1').classList.toggle('hidden', n !== 1);
+    document.getElementById('reset-step2').classList.toggle('hidden', n !== 2);
+}
+
+/** الخطوة ١ — يُكشف التلميح ثم يُحتفظ به لتمريره في الخطوة الثانية. */
+async function fetchResetHint() {
+    const userId = document.getElementById('reset-user').value.trim();
+    if (!userId) return showErr('reset-err1', 'اكتب اسم المستخدم أولاً');
+    setLoading('reset-hint-btn', true);
+    showErr('reset-err1', '');
+    try {
+        const hint = await dbGetPassHint(userId);
+        const box  = document.getElementById('reset-hint-box');
+        const txt  = document.getElementById('reset-hint-text');
+        if (hint) {
+            txt.textContent = hint;
+        } else {
+            txt.textContent = 'لا يوجد تلميح محفوظ لهذا الحساب';
+        }
+        box.classList.remove('hidden');
+        _resetUser = userId;
+        _resetHint = hint;
+        document.getElementById('reset-sub2').textContent = 'كلمة مرور جديدة لـ: ' + userId;
+        setTimeout(() => {
+            showResetStep(2);
+            document.getElementById('reset-pass').focus();
+        }, 700);
+    } catch(e) {
+        showErr('reset-err1', e.message);
+    } finally { setLoading('reset-hint-btn', false); }
+}
+
+/** الخطوة ٢ — إعادة التعيين ثم الدخول مباشرة، وحفظ التلميح الجديد إن كُتب. */
+async function submitResetPassword() {
+    const pass  = document.getElementById('reset-pass').value;
+    const pass2 = document.getElementById('reset-pass2').value;
+    const hint  = document.getElementById('reset-hint-new').value.trim();
+    if (!_resetUser) { showResetStep(1); return showErr('reset-err1', 'ابدأ من الخطوة الأولى'); }
+    if (!pass || pass.length < 4) return showErr('reset-err2', 'كلمة المرور يجب أن تكون 4 أحرف على الأقل');
+    if (pass !== pass2)           return showErr('reset-err2', 'كلمتا المرور غير متطابقتين');
+    setLoading('reset-save-btn', true);
+    showErr('reset-err2', '');
+    try {
+        await dbResetWithHint(_resetUser, _resetHint, pass);
+        // دخول مباشر بالكلمة الجديدة — القاعدة أبطلت كل الجلسات القديمة
+        const uid = await dbLogin(_resetUser, pass, true);
+        currentUser = uid;
+        localStorage.setItem('sp_username', uid);
+        if (hint) { try { await dbUpdatePassHint(uid, hint); } catch(_) {} }
+        closeResetModal();
+        showErr('login-err', '');
+        const hb = document.getElementById('hint-box');
+        if (hb) hb.classList.add('hidden');
+        await showApp();
+        showToast('تم تغيير كلمة المرور ✅');
+    } catch(e) {
+        showErr('reset-err2', e.message);
+    } finally { setLoading('reset-save-btn', false); }
+}
+
+// ============================================================
 //  تغيير كلمة المرور
 // ============================================================
 async function showChangePwd() {
