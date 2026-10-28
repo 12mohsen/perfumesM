@@ -99,19 +99,25 @@ window.addEventListener('DOMContentLoaded', async () => {
         if (loginUserEl) loginUserEl.value = savedUsername;
     }
 
-    const saved = localStorage.getItem('sp_user') || sessionStorage.getItem('sp_user');
-    if (saved) {
-        currentUser = saved;
+    // القاعدة وحدها تقرّر صلاحية الجلسة. كان يكفي سابقاً اسمٌ محفوظ في
+    // localStorage لفتح التطبيق على أي حساب — صار التوكن هو الفيصل.
+    const sessionUser = await dbSessionUser();
+    if (sessionUser) {
+        currentUser = sessionUser;
         try {
             await showApp();
         } catch(e) {
             // فشل التحميل التلقائي → العودة لشاشة الدخول
             currentUser = null;
+            await dbLogout();
             localStorage.removeItem('sp_user');
             sessionStorage.removeItem('sp_user');
             document.getElementById('auth-section').classList.remove('hidden');
             document.getElementById('app-section').classList.add('hidden');
         }
+    } else {
+        localStorage.removeItem('sp_user');
+        sessionStorage.removeItem('sp_user');
     }
     document.querySelectorAll('.tab-btn').forEach(btn =>
         btn.addEventListener('click', () => switchTab(btn.dataset.tab)));
@@ -147,7 +153,7 @@ async function handleLogin() {
     const remember = document.getElementById('remember-me').checked;
     setLoading('login-btn', true);
     try {
-        const uid = await dbLogin(userId, pass);
+        const uid = await dbLogin(userId, pass, remember);
         showErr('login-err', '');
         currentUser = uid;
         if (remember) {
@@ -172,16 +178,30 @@ function hideShareModal() {
     document.getElementById('share-modal').classList.add('hidden');
 }
 
-function logout() {
+async function logout() {
+    // إبطال التوكن في القاعدة، لا في المتصفح وحده
+    await dbLogout();
     currentUser = null;
     localStorage.removeItem('sp_user');
     localStorage.removeItem('sp_username');
     sessionStorage.removeItem('sp_user');
     purchases = []; formulas = []; oilCatalog = []; trash = [];
+    selectedPurIds.clear(); selectedFavIds.clear();
+    selectedTrashIds.clear(); selectedOilIds.clear();
+
+    // تفريغ ما يخص الحساب السابق: القوائم المعروضة ثم حقول النماذج
+    ['pur-tbody','fav-grid','oils-list','trash-grid','trash-list']
+        .forEach(id => { const el = document.getElementById(id); if (el) el.innerHTML = ''; });
+    ['login-user','login-pass','reg-user','reg-pass','reg-pass2','reg-hint',
+     'pur-name','pur-price','pur-qty','pur-location','pur-note','pur-search',
+     'oil-name','oil-price','oil-note','oil-search','fav-search',
+     'formula-name-ar','formula-name-en','formula-vol','formula-water',
+     'cpwd-old','cpwd-new','cpwd-new2','cpwd-hint']
+        .forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+    document.querySelectorAll('.f-oil-row').forEach(r => r.remove());
+
     document.getElementById('auth-section').classList.remove('hidden');
     document.getElementById('app-section').classList.add('hidden');
-    document.getElementById('login-user').value = '';
-    document.getElementById('login-pass').value = '';
     // إخفاء مربع التلميح عند الخروج
     const hb = document.getElementById('hint-box');
     if (hb) hb.classList.add('hidden');
