@@ -245,6 +245,22 @@ async function showPassHint() {
 }
 
 // ============================================================
+//  التلميح: يجوز أن يحوي اسم المستخدم لتمييز الحساب، ولا يجوز أن
+//  يكون الاسم وحده — القاعدة ترفض عندها إعادة التعيين (hint_too_weak)
+//  لأن تلميحاً يساوي الاسم لا يثبت شيئاً.
+//  يعيد رسالة الخطأ، أو '' إذا كان التلميح سليماً.
+// ============================================================
+function hintProblem(hint, userId) {
+    const h = (hint || '').trim().toLowerCase();
+    const u = (userId || '').trim().toLowerCase();
+    if (!h || !u) return '';
+    if (h === u)
+        return 'التلميح لا يصلح أن يكون اسم المستخدم وحده — أضف بعده ما يذكّرك، '
+             + 'مثل: «' + (userId || '').trim() + ' — أول عطر ركّبته».';
+    return '';
+}
+
+// ============================================================
 //  إعادة تعيين كلمة المرور  (نسيت كلمة المرور)
 //  خطوتان: كشف التلميح ← كلمة مرور جديدة ثم دخول تلقائي
 // ============================================================
@@ -313,6 +329,8 @@ async function submitResetPassword() {
     if (!_resetUser) { showResetStep(1); return showErr('reset-err1', 'ابدأ من الخطوة الأولى'); }
     if (!pass || pass.length < 4) return showErr('reset-err2', 'كلمة المرور يجب أن تكون 4 أحرف على الأقل');
     if (pass !== pass2)           return showErr('reset-err2', 'كلمتا المرور غير متطابقتين');
+    const hintErr = hintProblem(hint, _resetUser);
+    if (hintErr) return showErr('reset-err2', hintErr);
     setLoading('reset-save-btn', true);
     showErr('reset-err2', '');
     try {
@@ -355,6 +373,8 @@ function hideChangePwd() {
 
 async function handleUpdateHint() {
     const hint = (document.getElementById('cpwd-hint')?.value || '').trim();
+    const problem = hintProblem(hint, currentUser);
+    if (problem) return showErr('cpwd-hint-err', problem);
     setLoading('cpwd-hint-btn', true);
     try {
         await dbUpdatePassHint(currentUser, hint);
